@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
 
         AuthManager authManager = AuthManager.getInstance();
 
-        authManager.removeSession(token);
+        sessionRepository.deleteByToken(token);
 
         return LogoutResponse.builder()
                 .message("Logout berhasil")
