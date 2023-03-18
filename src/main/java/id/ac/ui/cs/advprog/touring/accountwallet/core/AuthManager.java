@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.core;
 
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.Tool;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 
 public class AuthManager {
@@ -13,13 +14,16 @@ public class AuthManager {
     }
 
     public Boolean validatePassword(User user, String password) {
-        return null;
+        Tool passwordHasher = new PasswordHasher(password);
+        String hashedPassword = passwordHasher.execute();
+        
+        return user.getPassword() == hashedPassword;
     }
 
     public String generateToken(User user) {
-        return null;
-    }
-
-    public void removeSession(String token) {
+        Tool tokenGenerator = new TokenGenerator();
+        String token = tokenGenerator.execute();
+        
+        return token;
     }
 }
