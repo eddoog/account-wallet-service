@@ -1,6 +1,8 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.core;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.Tool;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.PasswordHasher;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.TokenGenerator;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 
 public class AuthManager {
@@ -21,7 +23,7 @@ public class AuthManager {
     }
 
     public String generateToken(User user) {
-        Tool tokenGenerator = new TokenGenerator();
+        Tool tokenGenerator = new TokenGenerator(user);
         String token = tokenGenerator.execute();
         
         return token;
