@@ -21,4 +21,18 @@ public class User {
     @Column(nullable = false)
     @JsonIgnore
     private String password;
+
+    @Column(nullable = false)
+    private String username;
+
+    @Column(nullable = false)
+    private UserType role;
+
+    @Column
+    private String verificationCode;
+
+    @Column(nullable = false)
+    private Boolean isEnabled;
+
+
 }
