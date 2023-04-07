@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.0.4"
 	id("io.spring.dependency-management") version "1.1.0"
+	id("org.sonarqube") version "3.0"
 	jacoco
 }
 
@@ -53,4 +54,8 @@ tasks.jacocoTestReport {
 		csv.required.set(false)
 		html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
 	}
+}
+
+tasks.sonarqube {
+	dependsOn(tasks.jacocoTestReport)
 }
