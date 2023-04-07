@@ -10,6 +10,6 @@ ENV JDBC_DATABASE_URL ${JDBC_DATABASE_URL}
 ENV JDBC_DATABASE_USERNAME ${JDBC_DATABASE_USERNAME}
 
 WORKDIR /app
-COPY ./build/libs/accountwallet-0.0.1-SNAPSHOT.jar /app
+COPY ./build/libs/account-wallet-0.0.1-SNAPSHOT.jar /app
 EXPOSE 8080
-CMD ["java","-jar","accountwallet-0.0.1-SNAPSHOT.jar"]
+CMD ["java","-jar","account-wallet-0.0.1-SNAPSHOT.jar"]
