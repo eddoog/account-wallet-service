@@ -2,7 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.0.4"
 	id("io.spring.dependency-management") version "1.1.0"
-	id("org.sonarqube") version "3.0"
+	id("org.sonarqube") version "3.5.0.2730"
 	jacoco
 }
 
@@ -53,6 +53,13 @@ tasks.jacocoTestReport {
 		xml.required.set(true)
 		csv.required.set(false)
 		html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+	}
+}
+
+sonarqube {
+	properties {
+		property ("sonar.projectKey", "account-wallet_account-wallet")
+		property ("sonar.organization", "account-wallet")
 	}
 }
 
