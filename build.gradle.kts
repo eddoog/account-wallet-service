@@ -62,7 +62,3 @@ sonarqube {
 		property ("sonar.organization", "account-wallet")
 	}
 }
-
-tasks.sonarqube {
-	dependsOn(tasks.jacocoTestReport)
-}
