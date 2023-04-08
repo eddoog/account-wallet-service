@@ -23,7 +23,7 @@ public class RegisterServiceImpl implements RegisterService{
     private RegisterManager registerManager = RegisterManager.getInstance();
     private UserBuilder userBuilder;
     @Override
-    public RegisterResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request, String URLSite) {
         String email = request.getEmail();
         String password = request.getPassword();
         String username = request.getUsername();
@@ -45,13 +45,14 @@ public class RegisterServiceImpl implements RegisterService{
             userBuilder = new TourGuideBuilder();
         }
 
-        RegisterResponse response = userBuilder.getUser(
+        RegisterResponse response = userBuilder.buildUser(
                 RegisterBuilderRequest.builder()
                 .email(email)
                 .password(encryptedPassword)
                 .username(username)
                 .role(role)
                 .verificationCode(verificationCode)
+                .URLSite(URLSite)
                 .build()
         );
 

@@ -16,5 +16,6 @@ public class RegisterBuilderRequest {
     private String password;
     private UserType role;
     private String verificationCode;
+    private String URLSite;
 }
 

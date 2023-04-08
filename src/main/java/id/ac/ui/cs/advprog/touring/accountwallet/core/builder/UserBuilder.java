@@ -8,7 +8,7 @@ import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
 public abstract class UserBuilder {
     protected abstract RegisterResponse createUser(RegisterBuilderRequest request);
 
-    public RegisterResponse getUser(RegisterBuilderRequest request) {
+    public RegisterResponse buildUser(RegisterBuilderRequest request) {
         return createUser(request);
     }
 }
