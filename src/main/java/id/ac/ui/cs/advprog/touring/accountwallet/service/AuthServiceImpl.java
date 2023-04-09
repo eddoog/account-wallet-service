@@ -65,4 +65,16 @@ public class AuthServiceImpl implements AuthService {
                 .message("Logout berhasil")
                 .build();
     }
+
+    @Override
+    public ValidateResponse validate(ValidateRequest request) {
+        String token = request.getToken();
+
+        Optional<Session> session = sessionRepository.findByToken(token);
+        if (session.isEmpty()) throw new InvalidTokenException(token);
+
+        return ValidateResponse.builder()
+                .user(session.get().getUser())
+                .build();
+    }
 }
