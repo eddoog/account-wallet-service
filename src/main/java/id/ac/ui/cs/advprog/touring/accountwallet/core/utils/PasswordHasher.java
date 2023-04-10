@@ -1,5 +1,8 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.core.utils;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 public class PasswordHasher implements Tool {
     private String password;
 
@@ -9,7 +12,8 @@ public class PasswordHasher implements Tool {
 
     @Override
     public String execute() {
-        // TODO: Hash password
-        return null;
+        PasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        String encryptedPassword = bcrypt.encode(password);
+        return encryptedPassword;
     }
 }
