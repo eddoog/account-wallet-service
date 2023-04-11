@@ -107,7 +107,7 @@ Deploy:
 
 sonarcloud-check:
   stage: test
-  image: gradle:jdk17-alpine
+  image: gradle:alpine
   cache:
     key: "${CI_JOB_NAME}"
     paths:
@@ -115,8 +115,6 @@ sonarcloud-check:
   dependencies:
     - Build
   script: gradle sonarqube
+  rules:
+      - if: $CI_COMMIT_REF_NAME == 'master' || $CI_PIPELINE_SOURCE == 'merge_request_event'
   allow_failure: true
-  only:
-    - merge_requests
-    - master # or the name of your main branch
-    - develop
