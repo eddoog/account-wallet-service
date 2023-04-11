@@ -7,11 +7,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "_user")
 public class User {
     @Id
     @GeneratedValue
@@ -33,6 +36,9 @@ public class User {
 
     @Column(nullable = false)
     private Boolean isEnabled;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
 
 }

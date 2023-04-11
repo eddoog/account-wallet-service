@@ -28,6 +28,7 @@ dependencies {
 	implementation("top.dcenter:justAuth-spring-security-starter:1.1.25")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-mail")
+	implementation("de.mkammerer:argon2-jvm:2.11")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")

@@ -5,5 +5,5 @@ import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 
 public interface EmailTool {
-    public void execute() throws MessagingException, UnsupportedEncodingException;
+    void execute() throws MessagingException, UnsupportedEncodingException;
 }
