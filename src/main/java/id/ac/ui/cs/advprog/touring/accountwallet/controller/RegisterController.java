@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class RegisterController {
     private final RegisterService registerService;
@@ -33,6 +33,6 @@ public class RegisterController {
 
     private String getSiteURL(HttpServletRequest request) {
         String siteURL = request.getRequestURL().toString();
-        return siteURL.replace(request.getServletPath(), "");
+        return siteURL.replace(request.getServletPath(), "") + "/api/v1/auth";
     }
 }

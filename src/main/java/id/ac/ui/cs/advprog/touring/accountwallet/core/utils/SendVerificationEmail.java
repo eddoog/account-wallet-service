@@ -28,7 +28,7 @@ public class SendVerificationEmail implements EmailTool {
     }
 
     private String getContent() {
-        String verifyURL = siteURL + "/auth/verify?code=" + user.getVerificationCode();
+        String verifyURL = siteURL + "/verify?code=" + user.getVerificationCode();
         String content = String.format(
                 "Dear %s,<br>" +
                 "Please click the link below to verify your registration:<br>" +
