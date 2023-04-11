@@ -21,4 +21,16 @@ public class User {
     @Column(nullable = false)
     @JsonIgnore
     private String password;
+
+    @Column(nullable = true)
+    private String phoneNum;
+
+    @Column(nullable = true)
+    private String name;
+
+    @Column(nullable = true)
+    private String gender;
+
+    @Column(nullable = true)
+    private String domicile;
 }
