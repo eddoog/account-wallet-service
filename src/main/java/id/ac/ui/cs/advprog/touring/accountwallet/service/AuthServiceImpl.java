@@ -39,10 +39,12 @@ public class AuthServiceImpl implements AuthService {
 
         String token = authManager.generateToken(user.get());
 
-        Session.builder()
+        Session newSession = Session.builder()
                 .token(token)
                 .user(user.get())
                 .build();
+
+        sessionRepository.save(newSession);
 
         return LoginResponse.builder()
                 .token(token)
