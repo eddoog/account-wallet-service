@@ -3,7 +3,7 @@ package id.ac.ui.cs.advprog.touring.accountwallet.core.utils;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
-public class PasswordEncryptor implements Tool {
+public class PasswordEncryptor implements AuthTool {
     public PasswordEncryptor(String password) {
         this.password = password;
     }
