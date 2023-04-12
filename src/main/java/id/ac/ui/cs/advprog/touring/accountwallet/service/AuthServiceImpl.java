@@ -57,8 +57,6 @@ public class AuthServiceImpl implements AuthService {
         Optional<Session> session = sessionRepository.findByToken(token);
         if (session.isEmpty()) throw new InvalidTokenException(token);
 
-        AuthManager authManager = AuthManager.getInstance();
-
         sessionRepository.deleteByToken(token);
 
         return LogoutResponse.builder()
