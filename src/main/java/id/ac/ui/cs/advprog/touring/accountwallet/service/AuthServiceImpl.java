@@ -39,10 +39,12 @@ public class AuthServiceImpl implements AuthService {
 
         String token = authManager.generateToken(user.get());
 
-        Session.builder()
+        Session newSession = Session.builder()
                 .token(token)
                 .user(user.get())
                 .build();
+
+        sessionRepository.save(newSession);
 
         return LoginResponse.builder()
                 .token(token)
@@ -57,12 +59,22 @@ public class AuthServiceImpl implements AuthService {
         Optional<Session> session = sessionRepository.findByToken(token);
         if (session.isEmpty()) throw new InvalidTokenException(token);
 
-        AuthManager authManager = AuthManager.getInstance();
-
-        authManager.removeSession(token);
+        sessionRepository.deleteByToken(token);
 
         return LogoutResponse.builder()
                 .message("Logout berhasil")
+                .build();
+    }
+
+    @Override
+    public ValidateResponse validate(ValidateRequest request) {
+        String token = request.getToken();
+
+        Optional<Session> session = sessionRepository.findByToken(token);
+        if (session.isEmpty()) throw new InvalidTokenException(token);
+
+        return ValidateResponse.builder()
+                .user(session.get().getUser())
                 .build();
     }
 }
