@@ -22,15 +22,19 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @Column(nullable = true)
-    private String phoneNum;
+    @GeneratedValue
+    @Column()
+    private String userName;
 
-    @Column(nullable = true)
+    // Personal Data
+    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = true)
+    @Column()
+    private String phoneNum;
+    @Column()
+    private String birthDate;
+    @Column()
     private String gender;
-
-    @Column(nullable = true)
+    @Column()
     private String domicile;
 }

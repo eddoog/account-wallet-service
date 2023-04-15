@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.dto;
+package id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

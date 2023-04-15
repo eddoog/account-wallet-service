@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.dto;
+package id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditPersonalDataResponse {
+public class EditUsernameResponse {
     String message;
 }

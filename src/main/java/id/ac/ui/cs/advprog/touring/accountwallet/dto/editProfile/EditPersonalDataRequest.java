@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.dto;
+package id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
@@ -12,8 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EditPersonalDataRequest {
-    private String phoneNum;
     private String name;
+    private String phoneNum;
+    private String birthDate;
     private String gender;
     private String domicile;
 }
