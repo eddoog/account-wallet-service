@@ -4,8 +4,8 @@ import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.service.RegisterService;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,16 +15,16 @@ import java.io.UnsupportedEncodingException;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public class RegisterController {
     private final RegisterService registerService;
+    @Value("${verification-domain}")
+    private String siteURL;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register (
-            @RequestBody RegisterRequest requestBody,
-            HttpServletRequest requestObj
+            @RequestBody RegisterRequest request
     ) throws MessagingException, UnsupportedEncodingException {
-        return ResponseEntity.status(201).body(registerService.register(requestBody, getSiteURL(requestObj)));
+        return ResponseEntity.status(201).body(registerService.register(request, getSiteURL()));
     }
 
     @GetMapping("/verify")
@@ -32,8 +32,7 @@ public class RegisterController {
         return ResponseEntity.status(201).body(registerService.verify(code));
     }
 
-    private String getSiteURL(HttpServletRequest request) {
-        String siteURL = request.getRequestURL().toString();
-        return siteURL.replace(request.getServletPath(), "") + "/api/v1/auth";
+    private String getSiteURL() {
+        return siteURL + "/auth";
     }
 }
