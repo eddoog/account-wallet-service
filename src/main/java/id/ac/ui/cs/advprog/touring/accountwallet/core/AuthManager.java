@@ -10,14 +10,12 @@ public class AuthManager {
 
     private AuthManager() { }
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     public static AuthManager getInstance() {
         return instance;
     }
 
     public Boolean validatePassword(User user, String password) {
-
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.matches(password, user.getPassword());
     }
 
