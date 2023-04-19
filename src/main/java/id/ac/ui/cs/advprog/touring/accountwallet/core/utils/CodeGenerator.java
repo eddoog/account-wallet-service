@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 
 @NoArgsConstructor
-public class CodeGenerator implements Tool {
+public class CodeGenerator implements AuthTool {
     private final char[] allowedCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 
     public String generateToken(){

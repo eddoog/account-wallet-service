@@ -2,7 +2,7 @@ package id.ac.ui.cs.advprog.touring.accountwallet.core;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.CodeGenerator;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.PasswordEncryptor;
-import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.Tool;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.AuthTool;
 
 public class RegisterManager {
 
@@ -16,11 +16,11 @@ public class RegisterManager {
         return instance;
     }
     public String generateVerificationCode() {
-        Tool codeGenerator = new CodeGenerator();
+        AuthTool codeGenerator = new CodeGenerator();
         return codeGenerator.execute();
     }
     public String encryptPassword(String password) {
-        Tool passwordEncryptor = new PasswordEncryptor(password);
+        AuthTool passwordEncryptor = new PasswordEncryptor(password);
         return passwordEncryptor.execute();
     }
 }
