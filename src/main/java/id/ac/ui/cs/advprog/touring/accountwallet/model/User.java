@@ -7,11 +7,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "_user")
 public class User {
     @Id
     @GeneratedValue
@@ -22,13 +25,23 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @GeneratedValue
-    @Column()
-    private String userName;
-
-    // Personal Data
     @Column(nullable = false)
-    private String name;
+    private String username;
+
+    @Column(nullable = false)
+    private UserType role;
+
+    @Column
+    private String verificationCode;
+
+    @Column(nullable = false)
+    private Boolean isEnabled;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column()
+    private String fullName;
     @Column()
     private String phoneNum;
     @Column()

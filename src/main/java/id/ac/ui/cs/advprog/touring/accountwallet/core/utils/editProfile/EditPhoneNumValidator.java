@@ -10,8 +10,8 @@ public class EditPhoneNumValidator implements IValidator {
     }
 
     @Override
-    public String validate() throws InvalidPhoneNumFormatException {
-        String phoneNum = request.getName();
+    public String validate(){
+        String phoneNum = request.getPhoneNum();
         if (!phoneNum.matches("\\d+")) {
             throw new InvalidPhoneNumFormatException();
         }

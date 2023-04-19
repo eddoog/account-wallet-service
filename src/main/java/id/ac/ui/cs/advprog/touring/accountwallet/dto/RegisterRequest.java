@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile;
+package id.ac.ui.cs.advprog.touring.accountwallet.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditUsernameRequest {
-    private String email;
+public class RegisterRequest {
     private String username;
+    private String email;
+    private String password;
+    private String role;
 }

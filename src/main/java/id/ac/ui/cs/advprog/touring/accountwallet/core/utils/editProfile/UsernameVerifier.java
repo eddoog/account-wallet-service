@@ -6,15 +6,18 @@ import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditUsernameReq
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsernameVerifier {
+public class UsernameVerifier implements IVerifier {
     private EditUsernameRequest request;
+    IValidator usernameV;
     public UsernameVerifier(EditUsernameRequest request) {
         this.request = request;
-        IValidator usernameV = new EditUsernameValidator(request);
+        usernameV = new EditUsernameValidator(request);
     }
 
-    public String verify() {
-        // TODO: Complete this function
-        return null;
+    public List<String> verify() {
+        List<String> verifiedData = new ArrayList<>();
+        String verified = usernameV.validate();
+        verifiedData.add(verified);
+        return verifiedData;
     }
 }

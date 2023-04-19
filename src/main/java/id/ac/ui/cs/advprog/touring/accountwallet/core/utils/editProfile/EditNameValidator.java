@@ -8,8 +8,8 @@ public class EditNameValidator implements IValidator {
     EditNameValidator(EditPersonalDataRequest request){
         this.request = request;
     }
-    public String validate() throws InvalidNameFormatException {
-        String name = request.getName();
+    public String validate(){
+        String name = request.getFullName();
         int spaceCount = 0;
 
         for (int i = 0; i < name.length(); i++) {

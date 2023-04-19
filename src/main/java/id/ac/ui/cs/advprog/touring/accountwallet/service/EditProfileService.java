@@ -5,7 +5,7 @@ import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditProfileResp
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditUsernameRequest;
 
 public interface EditProfileService {
-    public EditProfileResponse editPersonalData(Integer id, EditPersonalDataRequest request);
-    public EditProfileResponse editUsername(Integer id, EditUsernameRequest request);
+    EditProfileResponse editPersonalData(EditPersonalDataRequest request);
+    EditProfileResponse editUsername(EditUsernameRequest request);
 }
 

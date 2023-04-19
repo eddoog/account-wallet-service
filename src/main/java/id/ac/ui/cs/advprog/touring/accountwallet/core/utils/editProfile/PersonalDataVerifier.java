@@ -19,9 +19,13 @@ public class PersonalDataVerifier implements IVerifier {
         this.steps.add(birthDateV);
     }
 
-    public String verify() {
-        // TODO: Complete this function
-        return null;
+    public List<String> verify() {
+        List<String> verifiedData = new ArrayList<>();
+        for(IValidator t : steps){
+            String verified = t.validate();
+            verifiedData.add(verified);
+        }
+        return verifiedData;
     }
 
 }

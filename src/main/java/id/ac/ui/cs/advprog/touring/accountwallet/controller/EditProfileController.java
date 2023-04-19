@@ -3,7 +3,6 @@ package id.ac.ui.cs.advprog.touring.accountwallet.controller;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditPersonalDataRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditProfileResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditUsernameRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditUsernameResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.service.EditProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +15,14 @@ public class EditProfileController {
 
     private final EditProfileService editProfileService;
     @PutMapping("/update/personalData/{id}")
-    public ResponseEntity<EditProfileResponse> editPersonalData(@PathVariable Integer id, @RequestBody EditPersonalDataRequest request) {
-        EditProfileResponse response = editProfileService.editPersonalData(id, request);
+    public ResponseEntity<EditProfileResponse> editPersonalData(@RequestBody EditPersonalDataRequest request) {
+        EditProfileResponse response = editProfileService.editPersonalData(request);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/update/username/{id}")
-    public ResponseEntity<EditProfileResponse> editUsername(@PathVariable Integer id, @RequestBody EditUsernameRequest request) {
-        EditProfileResponse response = editProfileService.editUsername(id, request);
+    public ResponseEntity<EditProfileResponse> editUsername(@RequestBody EditUsernameRequest request) {
+        EditProfileResponse response = editProfileService.editUsername(request);
         return ResponseEntity.ok(response);
     }
 }
