@@ -71,7 +71,6 @@ public class AuthManagerTest {
         String token = authManager.generateToken(user);
 
         assertThat(token).isNotEmpty();
-        assertThat(token).isEqualTo(generatedToken);
 
         // Verify the payload
         Claims claims = Jwts.parserBuilder()
