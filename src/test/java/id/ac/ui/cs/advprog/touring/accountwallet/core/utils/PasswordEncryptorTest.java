@@ -1,32 +1,25 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.core.utils;
 
-import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PasswordEncryptorTest {
-
-    private PasswordEncryptor passwordEncryptor;
-    private String plainPassword;
-
-    @BeforeEach
-    public void setUp() {
-        plainPassword = "testPassword";
-        passwordEncryptor = new PasswordEncryptor(plainPassword);
-    }
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Test
     public void testExecute() {
-        String encryptedPassword = passwordEncryptor.execute();
+        // Arrange
+        String password = "testpassword";
+        PasswordEncryptor encryptor = new PasswordEncryptor(password);
 
-        assertThat(encryptedPassword).isNotEmpty();
+        // Act
+        String encryptedPassword = encryptor.execute();
 
-        Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
-        boolean isValid = argon2.verify(encryptedPassword, plainPassword);
-
-        assertThat(isValid).isTrue();
+        // Assert
+        assertTrue(passwordEncoder.matches(password, encryptedPassword),
+                "The encrypted password does not match the original password");
     }
 }
