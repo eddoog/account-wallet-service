@@ -15,7 +15,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class SessionRepositoryTest {
+class SessionRepositoryTest {
 
     @Mock
     private SessionRepository sessionRepository;
@@ -36,27 +36,27 @@ public class SessionRepositoryTest {
     }
 
     @Test
-    public void testFindByToken() {
+    void testFindByToken() {
         when(sessionRepository.findByToken(any(String.class))).thenReturn(Optional.of(session));
 
         Optional<Session> foundSession = sessionRepository.findByToken("sampleToken");
 
-        assertThat(foundSession.isPresent()).isTrue();
+        assertThat(foundSession).isPresent();
         assertThat(foundSession.get().getToken()).isEqualTo(session.getToken());
     }
 
     @Test
-    public void testFindByUser() {
+    void testFindByUser() {
         when(sessionRepository.findByUser(any(User.class))).thenReturn(Optional.of(session));
 
         Optional<Session> foundSession = sessionRepository.findByUser(user);
 
-        assertThat(foundSession.isPresent()).isTrue();
+        assertThat(foundSession).isPresent();
         assertThat(foundSession.get().getUser()).isEqualTo(session.getUser());
     }
 
     @Test
-    public void testDeleteByToken() {
+    void testDeleteByToken() {
         doNothing().when(sessionRepository).deleteByToken(any(String.class));
 
         sessionRepository.deleteByToken(session.getToken());

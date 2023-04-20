@@ -85,8 +85,8 @@ class SendVerificationEmailTest {
         when(message.getRecipients(MimeMessage.RecipientType.TO)).thenReturn(new Address[] { new InternetAddress("alfredo.austin@ui.ac.id") });
 
         // Verify that the message has the correct properties
-        Assertions.assertEquals(message.getSubject(), "Please verify your registration");
-        Assertions.assertEquals(message.getFrom()[0].toString(), "A17 Account Wallet <adproa17@gmail.com>");
-        Assertions.assertEquals(message.getRecipients(MimeMessage.RecipientType.TO)[0].toString(), "alfredo.austin@ui.ac.id");
+        Assertions.assertEquals("Please verify your registration", message.getSubject());
+        Assertions.assertEquals("A17 Account Wallet <adproa17@gmail.com>", message.getFrom()[0].toString() );
+        Assertions.assertEquals( "alfredo.austin@ui.ac.id", message.getRecipients(MimeMessage.RecipientType.TO)[0].toString());
     }
 }

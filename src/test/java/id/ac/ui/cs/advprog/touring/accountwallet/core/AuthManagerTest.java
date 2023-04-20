@@ -15,10 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthManagerTest {
+class AuthManagerTest {
 
     @InjectMocks
     private AuthManager authManager;
@@ -51,21 +50,19 @@ public class AuthManagerTest {
     }
 
     @Test
-    public void testGetInstance() {
+    void testGetInstance() {
         AuthManager newInstance = AuthManager.getInstance();
-        assertThat(newInstance).isNotNull();
-        assertThat(newInstance).isInstanceOf(AuthManager.class);
-        assertThat(newInstance).isSameAs(authManager);
+        assertThat(newInstance).isNotNull().isInstanceOf(AuthManager.class).isSameAs(authManager);
     }
 
     @Test
-    public void testValidatePassword() {
+    void testValidatePassword() {
         boolean isValid = authManager.validatePassword(user, plainPassword);
         assertThat(isValid).isTrue();
     }
 
     @Test
-    public void testGenerateToken() {
+    void testGenerateToken() {
         TokenGenerator tokenGenerator = new TokenGenerator(user);
         String generatedToken = tokenGenerator.execute();
         String token = authManager.generateToken(user);
