@@ -12,7 +12,7 @@ public class CodeGenerator implements AuthTool {
     public String generateToken(){
         var random = new SecureRandom();
         var token = new ArrayList<String>();
-        for (int i = 0; i < 10; i++) {
+        for (var i = 0; i < 10; i++) {
             var randomCharIndex = random.nextInt(allowedCharacters.length);
             var randomChar = allowedCharacters[randomCharIndex];
             token.add(String.valueOf(randomChar));

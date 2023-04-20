@@ -28,14 +28,14 @@ public class AuthServiceImpl implements AuthService {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) throw new UserNotFoundException(email);
 
-        AuthManager authManager = AuthManager.getInstance();
+        var authManager = AuthManager.getInstance();
 
-        Boolean isPasswordValid = authManager.validatePassword(user.get(), password);
+        boolean isPasswordValid = authManager.validatePassword(user.get(), password);
         if (!isPasswordValid) throw new WrongPasswordException(password);
 
         String token = authManager.generateToken(user.get());
 
-        Session newSession = Session.builder()
+        var newSession = Session.builder()
                 .token(token)
                 .user(user.get())
                 .build();

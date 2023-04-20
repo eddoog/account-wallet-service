@@ -20,32 +20,32 @@ public class SendVerificationEmail implements EmailTool {
 
     @Override
     public void execute() throws MessagingException, UnsupportedEncodingException {
-        String content = getContent();
+        var content = getContent();
 
-        MimeMessage message = getMessage(content);
+        var message = getMessage(content);
 
         mailSender.send(message);
     }
 
-    private String getContent() {
-        String verifyURL = siteURL + "/verify?code=" + user.getVerificationCode();
-        String content = String.format(
+    String getContent() {
+        var verifyURL = siteURL + "/verify?code=" + user.getVerificationCode();
+
+        return String.format(
                 "Dear %s,<br>" +
-                "Please click the link below to verify your registration:<br>" +
-                "<h4>" +
-                    "<a href=\"%s\" target=\"_blank\">Click this to complete the verification process</a>" +
-                "</h4>" +
-                "Thank you,<br>" +
-                "A17 Account Wallet.",
+                        "Please click the link below to verify your registration:<br>" +
+                        "<h4>" +
+                        "<a href=\"%s\" target=\"_blank\">Click this to complete the verification process</a>" +
+                        "</h4>" +
+                        "Thank you,<br>" +
+                        "A17 Account Wallet.",
                 user.getUsername(),
                 verifyURL
         );
-        return content;
     }
 
-    private MimeMessage getMessage(String content) throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+    MimeMessage getMessage(String content) throws MessagingException, UnsupportedEncodingException {
+        var message = mailSender.createMimeMessage();
+        var helper = new MimeMessageHelper(message);
         helper.setFrom("adproa17@gmail.com", "A17 Account Wallet");
         helper.setTo(user.getEmail());
         helper.setSubject("Please verify your registration");
