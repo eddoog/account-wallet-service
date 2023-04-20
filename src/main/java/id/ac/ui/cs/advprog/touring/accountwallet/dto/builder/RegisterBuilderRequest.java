@@ -20,7 +20,7 @@ public class RegisterBuilderRequest {
     private String password;
     private UserType role;
     private String verificationCode;
-    private String URLSite;
+    private String siteURL;
     private Optional<User> userIfAlreadyBeenMade;
     private JavaMailSender mailSender;
 }

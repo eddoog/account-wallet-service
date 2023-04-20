@@ -13,7 +13,7 @@ public abstract class UserBuilder {
     protected abstract RegisterResponse createUser(RegisterBuilderRequest request, User user) throws MessagingException, UnsupportedEncodingException;
     public RegisterResponse buildUser(RegisterBuilderRequest request) throws MessagingException, UnsupportedEncodingException {
 
-        User newUser = decideUser(request);
+        var newUser = decideUser(request);
 
         return createUser(request, newUser);
     }
@@ -28,18 +28,16 @@ public abstract class UserBuilder {
     }
 
     private User createNewUser(RegisterBuilderRequest request) {
-        User newUser = User.builder()
+        return User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .role(request.getRole())
                 .createdAt(LocalDateTime.now())
                 .build();
-
-        return newUser;
     }
 
-    private User decideUser(RegisterBuilderRequest request) {
+    User decideUser(RegisterBuilderRequest request) {
         User newUser;
 
         Optional<User> optionalUser = request.getUserIfAlreadyBeenMade();

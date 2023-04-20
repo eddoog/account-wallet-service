@@ -15,14 +15,13 @@ public class AuthManager {
     }
 
     public Boolean validatePassword(User user, String password) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        var passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.matches(password, user.getPassword());
     }
 
     public String generateToken(User user) {
         AuthTool tokenGenerator = new TokenGenerator(user);
-        String token = tokenGenerator.execute();
-        
-        return token;
+
+        return tokenGenerator.execute();
     }
 }

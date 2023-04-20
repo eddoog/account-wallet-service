@@ -17,14 +17,12 @@ import java.io.UnsupportedEncodingException;
 @RequiredArgsConstructor
 public class RegisterController {
     private final RegisterService registerService;
-    @Value("${verification-domain}")
-    private String siteURL;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register (
             @RequestBody RegisterRequest request
     ) throws MessagingException, UnsupportedEncodingException {
-        return ResponseEntity.status(201).body(registerService.register(request, getSiteURL()));
+        return ResponseEntity.status(201).body(registerService.register(request));
     }
 
     @GetMapping("/verify")
@@ -32,7 +30,7 @@ public class RegisterController {
         return ResponseEntity.status(201).body(registerService.verify(code));
     }
 
-    private String getSiteURL() {
-        return siteURL + "/auth";
-    }
+//    private String getSiteURL() {
+//        return siteURL + "/auth";
+//    }
 }
