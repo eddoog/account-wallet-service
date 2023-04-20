@@ -6,11 +6,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PasswordEncryptorTest {
+class PasswordEncryptorTest {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Test
-    public void testExecute() {
+    void testExecute() {
         // Arrange
         String password = "testpassword";
         PasswordEncryptor encryptor = new PasswordEncryptor(password);

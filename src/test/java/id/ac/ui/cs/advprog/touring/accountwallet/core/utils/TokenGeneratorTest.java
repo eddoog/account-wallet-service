@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TokenGeneratorTest {
+class TokenGeneratorTest {
 
     @InjectMocks
     private TokenGenerator tokenGenerator;
@@ -38,7 +38,7 @@ public class TokenGeneratorTest {
     }
 
     @Test
-    public void testExecute() {
+    void testExecute() {
         String token = tokenGenerator.execute();
 
         assertThat(token).isNotEmpty();

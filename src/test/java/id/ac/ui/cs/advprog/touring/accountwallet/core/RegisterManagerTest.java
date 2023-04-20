@@ -34,9 +34,7 @@ class RegisterManagerTest {
     @Test
     void testGetInstance() {
         RegisterManager newInstance = RegisterManager.getInstance();
-        assertThat(newInstance).isNotNull();
-        assertThat(newInstance).isInstanceOf(RegisterManager.class);
-        assertThat(newInstance).isSameAs(registerManager);
+        assertThat(newInstance).isNotNull().isInstanceOf(RegisterManager.class).isSameAs(registerManager);
     }
 
     @Test

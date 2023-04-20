@@ -105,7 +105,7 @@ class RegisterServiceTest {
         service.register(uniqueRequest);
 
         // Mock the behavior of the userRepository findByEmail method to return the unique user
-        when(mockUserRepository.findByEmail(eq(uniqueRequest.getEmail()))).thenReturn(Optional.of(uniqueUser));
+        when(mockUserRepository.findByEmail(uniqueRequest.getEmail())).thenReturn(Optional.of(uniqueUser));
 
         // Attempt to register a user with the same email, should throw UserDoesExistException
         var duplicateUser = RegisterRequest.builder()
@@ -122,7 +122,7 @@ class RegisterServiceTest {
     void whenVerifyUserHaveToBeEnabled() {
         String verificationCode = "0123456789";
 
-        when(mockUserRepository.findByVerificationCode(eq(verificationCode))).thenReturn(Optional.of(userToBeVerified));
+        when(mockUserRepository.findByVerificationCode(verificationCode)).thenReturn(Optional.of(userToBeVerified));
         when(mockUserRepository.save(any(User.class))).thenReturn(userToBeVerified);
 
         var verifyRes = service.verify(verificationCode);
@@ -138,7 +138,7 @@ class RegisterServiceTest {
     void whenVerifyWIthIncorrectVerificationCodeShouldThrowsError() {
         String verificationCode = "0123456788";
 
-        when(mockUserRepository.findByVerificationCode(eq(verificationCode))).thenReturn(Optional.empty());
+        when(mockUserRepository.findByVerificationCode(verificationCode)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(VerificationInvalidException.class, () -> service.verify(verificationCode));
     }
@@ -149,7 +149,7 @@ class RegisterServiceTest {
 
         userToBeVerified.setCreatedAt(LocalDateTime.now().minusMinutes(20));
 
-        when(mockUserRepository.findByVerificationCode(eq(verificationCode))).thenReturn(Optional.of(userToBeVerified));
+        when(mockUserRepository.findByVerificationCode(verificationCode)).thenReturn(Optional.of(userToBeVerified));
 
         Assertions.assertThrows(VerificationInvalidException.class, () -> service.verify(verificationCode));
     }
@@ -160,7 +160,7 @@ class RegisterServiceTest {
 
         userToBeVerified.setIsEnabled(true);
 
-        when(mockUserRepository.findByVerificationCode(eq(verificationCode))).thenReturn(Optional.of(userToBeVerified));
+        when(mockUserRepository.findByVerificationCode(verificationCode)).thenReturn(Optional.of(userToBeVerified));
 
         Assertions.assertThrows(UserHasBeenVerifiedException.class, () -> service.verify(verificationCode));
     }

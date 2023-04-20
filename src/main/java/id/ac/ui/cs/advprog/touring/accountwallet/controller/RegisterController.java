@@ -5,7 +5,6 @@ import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.service.RegisterService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +28,4 @@ public class RegisterController {
     public ResponseEntity<RegisterResponse> verifyUser(@Param("code") String code) {
         return ResponseEntity.status(201).body(registerService.verify(code));
     }
-
-//    private String getSiteURL() {
-//        return siteURL + "/auth";
-//    }
 }

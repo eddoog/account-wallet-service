@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthControllerTest {
+class AuthControllerTest {
 
     @InjectMocks
     private AuthController authController;
@@ -37,7 +37,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void testLogin() throws Exception {
+    void testLogin() throws Exception {
         LoginRequest request = new LoginRequest();
         request.setEmail("test@example.com");
         request.setPassword("testPassword");
@@ -55,7 +55,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void testLogout() throws Exception {
+    void testLogout() throws Exception {
         LogoutRequest request = new LogoutRequest();
         request.setToken("testToken");
 
@@ -72,7 +72,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void testValidate() throws Exception {
+    void testValidate() throws Exception {
         ValidateRequest request = new ValidateRequest();
         request.setToken("testToken");
 

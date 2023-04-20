@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class CodeGeneratorTest {
     @Test
-    public void testGenerateTokenLength() {
+    void testGenerateTokenLength() {
         CodeGenerator codeGenerator = new CodeGenerator();
         String token = codeGenerator.generateToken();
         assertNotNull(token);
