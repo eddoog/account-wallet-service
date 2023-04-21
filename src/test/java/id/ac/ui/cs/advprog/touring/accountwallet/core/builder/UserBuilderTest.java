@@ -4,16 +4,16 @@ import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.builder.RegisterBuilderRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-
-import jakarta.mail.MessagingException;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -29,13 +29,6 @@ class UserBuilderTest {
     @BeforeEach
     void setUp() {
         newUserRequest = RegisterBuilderRequest.builder()
-                .username("testUsername")
-                .email("test@test.com")
-                .password("testPassword")
-                .role(UserType.CUSTOMER)
-                .build();
-
-        existingUserRequest = RegisterBuilderRequest.builder()
                 .username("testUsername")
                 .email("test@test.com")
                 .password("testPassword")
@@ -60,6 +53,14 @@ class UserBuilderTest {
                 .createdAt(LocalDateTime.now())
                 .verificationCode("0123456789")
                 .isEnabled(false)
+                .build();
+
+        existingUserRequest = RegisterBuilderRequest.builder()
+                .username("testUsername")
+                .email("test@test.com")
+                .password("testPassword")
+                .role(UserType.CUSTOMER)
+                .userIfAlreadyBeenMade(Optional.of(existingUser))
                 .build();
     }
 

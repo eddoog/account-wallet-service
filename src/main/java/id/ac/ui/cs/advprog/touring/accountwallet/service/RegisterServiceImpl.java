@@ -46,7 +46,7 @@ public class RegisterServiceImpl implements RegisterService {
 
         var optionalUser = doesUserExist(email);
 
-        if (optionalUser.isPresent() && optionalUser.get().getIsEnabled()) throw new UserDoesExistException(email);
+        if (optionalUser.isPresent() && optionalUser.get().getIsEnabled().booleanValue()) throw new UserDoesExistException(email);
 
         String encryptedPassword = registerManager.encryptPassword(password);
 
@@ -78,7 +78,7 @@ public class RegisterServiceImpl implements RegisterService {
 
         var user = userOptional.get();
 
-        if (user.getIsEnabled()) throw new UserHasBeenVerifiedException();
+        if (user.getIsEnabled().booleanValue()) throw new UserHasBeenVerifiedException();
 
         long checkDuration = Duration.between(user.getCreatedAt(), LocalDateTime.now()).toMinutes();
 
