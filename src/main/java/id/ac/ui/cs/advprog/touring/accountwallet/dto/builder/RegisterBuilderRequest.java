@@ -13,7 +13,6 @@ import java.util.Optional;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class RegisterBuilderRequest {
     private String username;
     private String email;

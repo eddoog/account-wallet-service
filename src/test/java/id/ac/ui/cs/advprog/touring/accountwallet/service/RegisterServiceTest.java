@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.service;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserDoesExistException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserHasBeenVerifiedException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.VerificationInvalidException;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -31,12 +33,10 @@ import static org.mockito.Mockito.*;
 class RegisterServiceTest {
     @InjectMocks
     private RegisterServiceImpl service;
-
     @Mock
     private UserRepository mockUserRepository;
-
-    private User uniqueUser, userToBeVerified;
-    private RegisterRequest uniqueRequest;
+    private User uniqueUser, userToBeVerified, tourGuideUser;
+    private RegisterRequest uniqueRequest, tourGuideRequest;
     @BeforeEach
     void setUp() {
         LocalDateTime createdAt = LocalDateTime.now().minusMinutes(10);
@@ -56,6 +56,24 @@ class RegisterServiceTest {
                 .role(UserType.CUSTOMER)
                 .verificationCode(null)
                 .isEnabled(true)
+                .createdAt(createdAt)
+                .build();
+
+        tourGuideRequest = RegisterRequest.builder()
+                .username("testUsername")
+                .email("test@test.com")
+                .password("testPassword")
+                .role("Tour Guide")
+                .build();
+
+        tourGuideUser = User.builder()
+                .id(1)
+                .username("testUsername")
+                .email("test@test.com")
+                .password("testPassword")
+                .role(UserType.TOURGUIDE)
+                .verificationCode("0123456789")
+                .isEnabled(false)
                 .createdAt(createdAt)
                 .build();
 
@@ -90,6 +108,22 @@ class RegisterServiceTest {
         Assertions.assertEquals(uniqueUser.getEmail(), result.getEmail());
         Assertions.assertEquals(uniqueUser.getUsername(), result.getUsername());
         Assertions.assertEquals(uniqueUser.getRole(), result.getRole());
+    }
+
+    @Test
+    void whenRegisterTourGuideShouldBeFoundInRepository() throws MessagingException, UnsupportedEncodingException {
+        var mockService = Mockito.mock(RegisterServiceImpl.class);
+        // Set behaviour of saving user in which the id is set to 1
+
+        when(mockService.register(tourGuideRequest)).thenReturn(RegisterResponse.builder().user(tourGuideUser).build());
+        // Save the tour guide user
+        var results = mockService.register(tourGuideRequest);
+        var result = results.getUser();
+
+        Assertions.assertEquals(tourGuideUser.getId(), result.getId());
+        Assertions.assertEquals(tourGuideUser.getEmail(), result.getEmail());
+        Assertions.assertEquals(tourGuideUser.getUsername(), result.getUsername());
+        Assertions.assertEquals(tourGuideUser.getRole(), result.getRole());
     }
 
     @Test
