@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.exception.advice;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.*;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,7 +16,14 @@ public class GlobalExceptionHandler {
             UserDoesExistException.class,
             UserAlreadyLoggedInException.class,
             UserNotFoundException.class,
-            WrongPasswordException.class
+            WrongPasswordException.class,
+            AgeRestrictionException.class,
+            InvalidBirthDateFormatException.class,
+            InvalidNameFormatException.class,
+            InvalidPhoneNumFormatException.class,
+            InvalidUsernameFormatException.class,
+            UsernameAlreadyUsedException.class,
+            UsernameEmptyInputException.class
     })
     public ResponseEntity<Object> definedException(Exception exception) {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;

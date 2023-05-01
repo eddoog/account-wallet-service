@@ -40,5 +40,14 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-
+    @Column()
+    private String fullName;
+    @Column()
+    private String phoneNum;
+    @Column()
+    private String birthDate;
+    @Column()
+    private String gender;
+    @Column()
+    private String domicile;
 }
