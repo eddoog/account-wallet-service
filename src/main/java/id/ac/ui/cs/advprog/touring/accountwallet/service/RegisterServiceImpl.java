@@ -16,6 +16,7 @@ import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -33,20 +34,23 @@ public class RegisterServiceImpl implements RegisterService {
     private final RegisterManager registerManager = RegisterManager.getInstance();
     private UserBuilder userBuilder;
 
+    @Value("${verification-domain}")
+    private String siteURL;
+
     @Override
-    public RegisterResponse register(RegisterRequest request, String URLSite) throws MessagingException, UnsupportedEncodingException {
+    public RegisterResponse register(RegisterRequest request) throws MessagingException, UnsupportedEncodingException {
         String email = request.getEmail();
         String password = request.getPassword();
         String username = request.getUsername();
-        UserType role = UserType.fromString(request.getRole());
+        var  role = UserType.fromString(request.getRole());
 
-        Optional<User> optionalUser = doesUserExist(email);
+        var optionalUser = doesUserExist(email);
 
-        if (optionalUser.isPresent() && optionalUser.get().getIsEnabled()) throw new UserDoesExistException(email);
+        if (optionalUser.isPresent() && optionalUser.get().getIsEnabled().booleanValue()) throw new UserDoesExistException(email);
 
         String encryptedPassword = registerManager.encryptPassword(password);
 
-        String verificationCode = PresetBeforeCreating(role);
+        String verificationCode = presetBeforeCreating(role);
 
         RegisterResponse response = userBuilder.buildUser(
                 RegisterBuilderRequest.builder()
@@ -55,7 +59,7 @@ public class RegisterServiceImpl implements RegisterService {
                 .username(username)
                 .role(role)
                 .verificationCode(verificationCode)
-                .URLSite(URLSite)
+                .siteURL(siteURL)
                 .userIfAlreadyBeenMade(optionalUser)
                 .mailSender(mailSender)
                 .build()
@@ -68,13 +72,13 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Override
     public RegisterResponse verify(String verificationCode) {
-        Optional<User> userOptional = userRepository.findByVerificationCode(verificationCode);
+        var userOptional = userRepository.findByVerificationCode(verificationCode);
 
         if (userOptional.isEmpty()) throw new VerificationInvalidException();
 
-        User user = userOptional.get();
+        var user = userOptional.get();
 
-        if (user.getIsEnabled()) throw new UserHasBeenVerifiedException();
+        if (user.getIsEnabled().booleanValue()) throw new UserHasBeenVerifiedException();
 
         long checkDuration = Duration.between(user.getCreatedAt(), LocalDateTime.now()).toMinutes();
 
@@ -85,19 +89,17 @@ public class RegisterServiceImpl implements RegisterService {
 
         userRepository.save(user);
 
-        RegisterResponse response = RegisterResponse.builder()
+        return RegisterResponse.builder()
                 .user(user)
                 .message("Your account has been verified")
                 .build();
-
-        return response;
     }
 
     private Optional<User> doesUserExist(String email) {
         return userRepository.findByEmail(email);
     }
 
-    private String PresetBeforeCreating(UserType role) {
+    private String presetBeforeCreating(UserType role) {
         String verificationCode;
 
         boolean isCustomer = role.toString().equals(UserType.CUSTOMER.toString());

@@ -11,12 +11,10 @@ public class CustomerBuilder extends UserBuilder {
         user.setVerificationCode(null);
         user.setIsEnabled(true);
 
-        RegisterResponse response = RegisterResponse
+        return RegisterResponse
                 .builder()
                 .user(user)
                 .message("New Customer has been successfully made")
                 .build();
-
-        return response;
     }
 }

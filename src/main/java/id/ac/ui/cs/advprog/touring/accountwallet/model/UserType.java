@@ -3,6 +3,7 @@ package id.ac.ui.cs.advprog.touring.accountwallet.model;
 public enum UserType {
     ADMIN, CUSTOMER, TOURGUIDE;
 
+    @Override
     public String toString() {
         switch(this) {
             case ADMIN: return "Admin";
