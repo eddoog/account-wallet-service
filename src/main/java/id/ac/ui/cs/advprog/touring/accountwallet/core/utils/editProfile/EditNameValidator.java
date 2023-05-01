@@ -4,12 +4,13 @@ import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditPersonalDat
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.InvalidNameFormatException;
 
 public class EditNameValidator implements IValidator {
-    private EditPersonalDataRequest request;
+    private final EditPersonalDataRequest request;
     EditNameValidator(EditPersonalDataRequest request){
         this.request = request;
     }
     public String validate(){
         String name = request.getFullName();
+        if (name.equals("")) return "";
         int spaceCount = 0;
 
         for (int i = 0; i < name.length(); i++) {

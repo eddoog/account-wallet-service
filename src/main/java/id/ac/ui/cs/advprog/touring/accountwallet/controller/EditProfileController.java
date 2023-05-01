@@ -9,18 +9,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/editProfile")
+@RequestMapping("/api/v1/auth/editProfile")
 @RequiredArgsConstructor
 public class EditProfileController {
 
     private final EditProfileService editProfileService;
-    @PutMapping("/update/personalData/{id}")
+    @PutMapping("/update/personalData")
     public ResponseEntity<EditProfileResponse> editPersonalData(@RequestBody EditPersonalDataRequest request) {
         EditProfileResponse response = editProfileService.editPersonalData(request);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update/username/{id}")
+    @PutMapping("/update/username")
     public ResponseEntity<EditProfileResponse> editUsername(@RequestBody EditUsernameRequest request) {
         EditProfileResponse response = editProfileService.editUsername(request);
         return ResponseEntity.ok(response);

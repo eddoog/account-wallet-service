@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.editProfile.Username
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditPersonalDataRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditProfileResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditUsernameRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserNotFoundException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.UsernameAlreadyUsedException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.UsernameEmptyInputException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
@@ -26,11 +27,17 @@ public class EditProfileServiceImpl implements EditProfileService {
     public EditProfileResponse editPersonalData(EditPersonalDataRequest request){
         String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()){
+            throw new UserNotFoundException(email);
+        }
         User user = userOptional.get();
 
-        String fullName = (user.getFullName().isEmpty()) ? null : user.getFullName();
-        String phoneNum = (user.getPhoneNum().isEmpty()) ? null : user.getPhoneNum();
-        String birthDate = (user.getBirthDate().isEmpty()) ? null : user.getBirthDate();
+        String fullName = (user.getFullName() == null) ? null : user.getFullName();
+        String phoneNum = (user.getPhoneNum() == null) ? null : user.getPhoneNum();
+        String birthDate = (user.getBirthDate() == null) ? null : user.getBirthDate();
+        String gender = (request.getGender().equals("")) ? null : request.getGender();
+        String domicile = (request.getDomicile().equals("")) ? null : request.getDomicile();
+
 
         IVerifier verifier = new PersonalDataVerifier(request);
         try{
@@ -39,12 +46,14 @@ public class EditProfileServiceImpl implements EditProfileService {
             phoneNum = (verified.get(1).equals("")) ? phoneNum : verified.get(1);
             birthDate = (verified.get(2).equals("")) ? birthDate : verified.get(2);
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            throw e;
         }
 
         user.setFullName(fullName);
         user.setPhoneNum(phoneNum);
         user.setBirthDate(birthDate);
+        user.setGender(gender);
+        user.setDomicile(domicile);
         userRepository.save(user);
 
         EditProfileResponse response = EditProfileResponse.builder()
@@ -58,26 +67,31 @@ public class EditProfileServiceImpl implements EditProfileService {
     public EditProfileResponse editUsername(EditUsernameRequest request){
         String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()){
+            throw new UserNotFoundException(email);
+        }
         User user = userOptional.get();
 
         String username = (user.getUsername().isEmpty()) ? null : user.getUsername();
-        if (username == null || request.getUsername().equals("")) {
+
+        String newUsername = request.getUsername();
+        if (username == null || newUsername.equals("")) {
             throw new UsernameEmptyInputException();
         }
 
-        if (userRepository.findByUsername(username).isPresent()){
+        if (userRepository.findByUsername(newUsername).isPresent()){
             throw new UsernameAlreadyUsedException();
         }
 
         IVerifier verifier = new UsernameVerifier(request);
         try{
             List<String> verified = verifier.verify();
-            username = verified.get(0);
+            newUsername = verified.get(0);
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            throw e;
         }
 
-        user.setUsername(username);
+        user.setUsername(newUsername);
         userRepository.save(user);
 
         EditProfileResponse response = EditProfileResponse.builder()

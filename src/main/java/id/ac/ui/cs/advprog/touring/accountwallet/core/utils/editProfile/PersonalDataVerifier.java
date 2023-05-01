@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonalDataVerifier implements IVerifier {
-    private EditPersonalDataRequest request;
     private final List<IValidator> steps;
     public PersonalDataVerifier(EditPersonalDataRequest request) {
-        this.request = request;
         steps = new ArrayList<>();
         IValidator nameV = new EditNameValidator(request);
         this.steps.add(nameV);

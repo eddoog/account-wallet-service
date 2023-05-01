@@ -4,7 +4,7 @@ import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditPersonalDat
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.InvalidPhoneNumFormatException;
 
 public class EditPhoneNumValidator implements IValidator {
-    private EditPersonalDataRequest request;
+    private final EditPersonalDataRequest request;
     EditPhoneNumValidator(EditPersonalDataRequest request){
         this.request = request;
     }
@@ -12,6 +12,7 @@ public class EditPhoneNumValidator implements IValidator {
     @Override
     public String validate(){
         String phoneNum = request.getPhoneNum();
+        if (phoneNum.equals("")) return "";
         if (!phoneNum.matches("\\d+")) {
             throw new InvalidPhoneNumFormatException();
         }

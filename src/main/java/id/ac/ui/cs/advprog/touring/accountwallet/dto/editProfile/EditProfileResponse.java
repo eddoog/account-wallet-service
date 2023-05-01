@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EditProfileResponse {
-    User user;
     String message;
+    User user;
 }

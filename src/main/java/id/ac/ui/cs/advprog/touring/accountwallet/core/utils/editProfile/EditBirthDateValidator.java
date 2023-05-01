@@ -8,15 +8,16 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 public class EditBirthDateValidator implements IValidator {
-    private EditPersonalDataRequest request;
+    private final EditPersonalDataRequest request;
     EditBirthDateValidator(EditPersonalDataRequest request){
         this.request = request;
     }
 
     @Override
     public String validate(){
+        String birthDate = request.getBirthDate();
+        if (birthDate.equals("")) return "";
         try {
-            String birthDate = request.getBirthDate();
             LocalDate dateOfBirth = LocalDate.parse(birthDate, java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             int age = LocalDate.now().getYear() - dateOfBirth.getYear();
             if (age < 13 || age > 100) {
