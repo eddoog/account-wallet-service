@@ -15,15 +15,13 @@ public class TourGuideBuilder extends UserBuilder {
         user.setVerificationCode(request.getVerificationCode());
         user.setIsEnabled(false);
 
-        EmailTool sendVerificationEmail = new SendVerificationEmail(user, request.getURLSite(), request.getMailSender());
+        EmailTool sendVerificationEmail = new SendVerificationEmail(user, request.getSiteURL(), request.getMailSender());
         sendVerificationEmail.execute();
 
-        RegisterResponse response = RegisterResponse
+        return RegisterResponse
                 .builder()
                 .user(user)
                 .message("Please verify your account in your email")
                 .build();
-
-        return response;
     }
 }

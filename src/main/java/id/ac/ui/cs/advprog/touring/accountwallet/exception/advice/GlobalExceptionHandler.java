@@ -25,9 +25,9 @@ public class GlobalExceptionHandler {
             UsernameAlreadyUsedException.class,
             UsernameEmptyInputException.class
     })
-    public ResponseEntity<Object> DefinedException(Exception exception) {
+    public ResponseEntity<Object> definedException(Exception exception) {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
-        ErrorTemplate baseException = new ErrorTemplate(
+        var baseException = new ErrorTemplate(
                 badRequest.value(),
                 exception.getMessage()
         );
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Object> generalError(Exception exception) {
         HttpStatus badRequest = HttpStatus.INTERNAL_SERVER_ERROR;
-        ErrorTemplate baseException = new ErrorTemplate(
+        var baseException = new ErrorTemplate(
                 badRequest.value(),
                 exception.getMessage()
         );

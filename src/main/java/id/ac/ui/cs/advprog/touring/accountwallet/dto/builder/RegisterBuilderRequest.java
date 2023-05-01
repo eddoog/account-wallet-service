@@ -13,14 +13,13 @@ import java.util.Optional;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class RegisterBuilderRequest {
     private String username;
     private String email;
     private String password;
     private UserType role;
     private String verificationCode;
-    private String URLSite;
+    private String siteURL;
     private Optional<User> userIfAlreadyBeenMade;
     private JavaMailSender mailSender;
 }
