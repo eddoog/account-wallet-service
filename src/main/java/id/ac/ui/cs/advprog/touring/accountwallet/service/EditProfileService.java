@@ -1,8 +1,8 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.service;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditPersonalDataRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditProfileResponse;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditUsernameRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditPersonalDataRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditProfileResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditUsernameRequest;
 
 public interface EditProfileService {
     EditProfileResponse editPersonalData(EditPersonalDataRequest request);

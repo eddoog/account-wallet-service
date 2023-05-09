@@ -1,6 +1,6 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.editProfile;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditUsernameRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.InvalidUsernameFormatException;
+package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.edit_profile;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditUsernameRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.InvalidUsernameFormatException;
 
 public class EditUsernameValidator implements IValidator {
 

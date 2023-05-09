@@ -1,8 +1,8 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.editProfile;
+package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.edit_profile;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditPersonalDataRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.InvalidBirthDateFormatException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.AgeRestrictionException;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditPersonalDataRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.InvalidBirthDateFormatException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.AgeRestrictionException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
