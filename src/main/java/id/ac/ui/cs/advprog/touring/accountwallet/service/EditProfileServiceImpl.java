@@ -35,15 +35,16 @@ public class EditProfileServiceImpl implements EditProfileService {
         String fullName = (user.getFullName() == null) ? null : user.getFullName();
         String phoneNum = (user.getPhoneNum() == null) ? null : user.getPhoneNum();
         String birthDate = (user.getBirthDate() == null) ? null : user.getBirthDate();
-        String gender = (request.getGender().equals("")) ? null : request.getGender();
-        String domicile = (request.getDomicile().equals("")) ? null : request.getDomicile();
-
+        String gender = (user.getGender() == null) ? null : user.getGender();
+        String domicile = (user.getDomicile() == null) ? null : user.getDomicile();
 
         IVerifier verifier = new PersonalDataVerifier(request);
         List<String> verified = verifier.verify();
-        fullName = (verified.get(0).equals("")) ? fullName : verified.get(0);
-        phoneNum = (verified.get(1).equals("")) ? phoneNum : verified.get(1);
-        birthDate = (verified.get(2).equals("")) ? birthDate : verified.get(2);
+        fullName = verified.get(0) == null ? fullName : verified.get(0);
+        phoneNum = verified.get(1) == null ? phoneNum : verified.get(1);
+        birthDate = verified.get(2) == null ? birthDate : verified.get(2);
+        gender = request.getGender() == null ? gender : request.getGender();
+        domicile = request.getDomicile() == null ? domicile : request.getDomicile();
 
         user.setFullName(fullName);
         user.setPhoneNum(phoneNum);
@@ -70,7 +71,7 @@ public class EditProfileServiceImpl implements EditProfileService {
         String username = (user.getUsername().isEmpty()) ? null : user.getUsername();
 
         String newUsername = request.getUsername();
-        if (username == null || newUsername.equals("")) {
+        if (username == null || newUsername == null) {
             throw new UsernameEmptyInputException();
         }
 

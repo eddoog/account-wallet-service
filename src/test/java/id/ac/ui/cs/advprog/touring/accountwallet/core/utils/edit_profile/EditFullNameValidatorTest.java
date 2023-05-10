@@ -2,20 +2,26 @@ package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.edit_profile;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditPersonalDataRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditProfileResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.AgeRestrictionException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.InvalidFullNameFormatException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
+import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 import id.ac.ui.cs.advprog.touring.accountwallet.service.EditProfileServiceImpl;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class EditFullNameValidatorTest {
 
     @InjectMocks
@@ -25,14 +31,14 @@ class EditFullNameValidatorTest {
     private UserRepository repository;
 
     User userDummy;
-    User userEmptyString;
+    User userUpdatedButNull;
     User userSuccess;
 
-    EditProfileResponse fullNameResponseEmptyString;
+    EditProfileResponse fullNameResponseNull;
     EditProfileResponse fullNameResponseSuccess;
     EditPersonalDataRequest fullNameRequestExceedsMaxNum;
     EditPersonalDataRequest fullNameRequestUsesSymbol;
-    EditPersonalDataRequest fullNameRequestEmptyString;
+    EditPersonalDataRequest fullNameRequestNull;
     EditPersonalDataRequest fullNameRequestThatPass;
 
     @BeforeEach
@@ -40,22 +46,59 @@ class EditFullNameValidatorTest {
         userDummy = User.builder()
                 .email("test@example.com")
                 .password("testPassword")
+                .username("testUsername")
+                .verificationCode("0123456789")
+                .isEnabled(false)
+                .role(UserType.CUSTOMER)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    @Test
+    void whenFullNameNullShouldReturnNull(){
+        fullNameRequestNull = EditPersonalDataRequest.builder()
+                .email("test@example.com")
+                .fullName(null)
                 .build();
 
-        userEmptyString = User.builder()
+        userUpdatedButNull = User.builder()
+                .email(userDummy.getEmail())
+                .password(userDummy.getPassword())
+                .username(userDummy.getUsername())
+                .verificationCode(userDummy.getVerificationCode())
+                .isEnabled(userDummy.getIsEnabled())
+                .role(userDummy.getRole())
+                .createdAt(userDummy.getCreatedAt())
+                .fullName(null)
+                .build();
+
+        fullNameResponseNull = EditProfileResponse.builder()
+                .user(userUpdatedButNull)
+                .message("Your profile editing has completed")
+                .build();
+
+        when(repository.findByEmail(fullNameRequestNull.getEmail())).thenReturn(Optional.of(userDummy));
+
+        EditProfileResponse result = service.editPersonalData(fullNameRequestNull);
+        Assertions.assertEquals(fullNameResponseNull, result);
+    }
+
+    @Test
+    void whenFullNameTrueShouldReturnSuccess(){
+        fullNameRequestThatPass = EditPersonalDataRequest.builder()
                 .email("test@example.com")
-                .password("testPassword")
+                .fullName("User John Doe")
                 .build();
 
         userSuccess = User.builder()
-                .email("test@example.com")
-                .password("testPassword")
-                .fullName("John Doe")
-                .build();
-
-        fullNameResponseEmptyString = EditProfileResponse.builder()
-                .user(userEmptyString)
-                .message("Your profile editing has completed")
+                .email(userDummy.getEmail())
+                .password(userDummy.getPassword())
+                .username(userDummy.getUsername())
+                .verificationCode(userDummy.getVerificationCode())
+                .isEnabled(userDummy.getIsEnabled())
+                .role(userDummy.getRole())
+                .createdAt(userDummy.getCreatedAt())
+                .fullName("User John Doe")
                 .build();
 
         fullNameResponseSuccess = EditProfileResponse.builder()
@@ -63,50 +106,20 @@ class EditFullNameValidatorTest {
                 .message("Your profile editing has completed")
                 .build();
 
-        fullNameRequestExceedsMaxNum = EditPersonalDataRequest.builder()
-                .email("test@example.com")
-                .fullName("John Doe Test Subject")
-                .build();
+        when(repository.findByEmail(fullNameRequestThatPass.getEmail())).thenReturn(Optional.of(userDummy));
 
-        fullNameRequestUsesSymbol = EditPersonalDataRequest.builder()
-                .email("test@example.com")
-                .fullName("John()Doe#")
-                .build();
-
-        fullNameRequestEmptyString = EditPersonalDataRequest.builder()
-                .email("test@example.com")
-                .fullName("")
-                .build();
-
-        fullNameRequestThatPass = EditPersonalDataRequest.builder()
-                .email("test@example.com")
-                .fullName("John Doe")
-                .build();
-    }
-
-    @Test
-    void whenFullNameEmptyStringShouldReturnNull(){
-        when(repository.findByEmail(any(String.class))).thenReturn(Optional.of(userDummy));
-        when(repository.save(any(User.class))).thenAnswer(invocation ->
-                invocation.getArgument(0, User.class));
-        EditProfileResponse result = service.editPersonalData(fullNameRequestEmptyString);
-        verify(repository, atLeastOnce()).save(any(User.class));
-        Assertions.assertEquals(fullNameResponseEmptyString, result);
-    }
-
-    @Test
-    void whenFullNameTrueShouldReturnSuccess(){
-        when(repository.findByEmail(any(String.class))).thenReturn(Optional.of(userDummy));
-        when(repository.save(any(User.class))).thenAnswer(invocation ->
-                invocation.getArgument(0, User.class));
         EditProfileResponse result = service.editPersonalData(fullNameRequestThatPass);
-        verify(repository, atLeastOnce()).save(any(User.class));
-        Assertions.assertEquals(fullNameResponseEmptyString, result);
+        Assertions.assertEquals(fullNameResponseSuccess, result);
     }
 
     @Test
     void whenFullNameExceedsMaxNumThrowFormatException(){
-        when(repository.findByEmail(any(String.class))).thenReturn(Optional.of(userDummy));
+        fullNameRequestExceedsMaxNum = EditPersonalDataRequest.builder()
+                .email("test@example.com")
+                .fullName("User John Doe Too")
+                .build();
+
+        when(repository.findByEmail(fullNameRequestExceedsMaxNum.getEmail())).thenReturn(Optional.of(userDummy));
 
         Assertions.assertThrows(InvalidFullNameFormatException.class, () -> {
             service.editPersonalData(fullNameRequestExceedsMaxNum);
@@ -115,10 +128,16 @@ class EditFullNameValidatorTest {
 
     @Test
     void whenFullNameUsesSymbolThrowFormatException(){
-        when(repository.findByEmail(any(String.class))).thenReturn(Optional.of(userDummy));
+        fullNameRequestUsesSymbol = EditPersonalDataRequest.builder()
+                .email("test@example.com")
+                .fullName("$01?01?1900#")
+                .build();
+
+        when(repository.findByEmail(fullNameRequestUsesSymbol.getEmail())).thenReturn(Optional.of(userDummy));
 
         Assertions.assertThrows(InvalidFullNameFormatException.class, () -> {
             service.editPersonalData(fullNameRequestUsesSymbol);
         });
     }
+
 }

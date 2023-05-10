@@ -12,7 +12,6 @@ public class EditUsernameValidator implements IValidator {
     @Override
     public String validate() {
         String username = request.getUsername();
-        if (username.equals("")) return "";
         String pattern = "^[A-Za-z0-9_-]+$";
         if (!username.matches(pattern)){
             throw new InvalidUsernameFormatException();

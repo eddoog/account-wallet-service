@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class EditProfileController {
 
     private final EditProfileService editProfileService;
+
     @PutMapping("/update/personalData")
     public ResponseEntity<EditProfileResponse> editPersonalData(@RequestBody EditPersonalDataRequest request) {
         EditProfileResponse response = editProfileService.editPersonalData(request);
