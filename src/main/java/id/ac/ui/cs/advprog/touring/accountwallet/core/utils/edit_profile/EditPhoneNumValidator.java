@@ -1,7 +1,7 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.editProfile;
+package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.edit_profile;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditPersonalDataRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.InvalidPhoneNumFormatException;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditPersonalDataRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.InvalidPhoneNumFormatException;
 
 public class EditPhoneNumValidator implements IValidator {
     private final EditPersonalDataRequest request;
@@ -12,11 +12,10 @@ public class EditPhoneNumValidator implements IValidator {
     @Override
     public String validate(){
         String phoneNum = request.getPhoneNum();
-        if (phoneNum.equals("")) return "";
+        if (phoneNum == null) return null;
         if (!phoneNum.matches("\\d+")) {
             throw new InvalidPhoneNumFormatException();
         }
-        // Check if the input has between 10 and 15 digits
         if (phoneNum.length() < 10 || phoneNum.length() > 15) {
             throw new InvalidPhoneNumFormatException();
         }

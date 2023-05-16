@@ -1,8 +1,8 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.editProfile;
+package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.edit_profile;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditPersonalDataRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.InvalidBirthDateFormatException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.AgeRestrictionException;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditPersonalDataRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.InvalidBirthDateFormatException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.AgeRestrictionException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -16,7 +16,7 @@ public class EditBirthDateValidator implements IValidator {
     @Override
     public String validate(){
         String birthDate = request.getBirthDate();
-        if (birthDate.equals("")) return "";
+        if (birthDate == null) return null;
         try {
             LocalDate dateOfBirth = LocalDate.parse(birthDate, java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             int age = LocalDate.now().getYear() - dateOfBirth.getYear();

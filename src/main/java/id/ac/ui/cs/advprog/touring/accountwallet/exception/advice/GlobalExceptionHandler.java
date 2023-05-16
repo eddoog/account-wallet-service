@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.exception.advice;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.*;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.*;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
             WrongPasswordException.class,
             AgeRestrictionException.class,
             InvalidBirthDateFormatException.class,
-            InvalidNameFormatException.class,
+            InvalidFullNameFormatException.class,
             InvalidPhoneNumFormatException.class,
             InvalidUsernameFormatException.class,
             UsernameAlreadyUsedException.class,

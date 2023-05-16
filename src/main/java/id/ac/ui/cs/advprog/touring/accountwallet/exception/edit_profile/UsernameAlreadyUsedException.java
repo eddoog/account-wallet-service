@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile;
+package id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile;
 
 public class UsernameAlreadyUsedException extends RuntimeException {
     public UsernameAlreadyUsedException() {
