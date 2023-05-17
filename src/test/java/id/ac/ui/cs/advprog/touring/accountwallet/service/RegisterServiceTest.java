@@ -1,10 +1,9 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.service;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterResponse;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserDoesExistException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserHasBeenVerifiedException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.VerificationInvalidException;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.register.RegisterRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.UserDoesExistException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.UserHasBeenVerifiedException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.VerificationInvalidException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -35,8 +33,8 @@ class RegisterServiceTest {
     private RegisterServiceImpl service;
     @Mock
     private UserRepository mockUserRepository;
-    private User uniqueUser, userToBeVerified, tourGuideUser;
-    private RegisterRequest uniqueRequest, tourGuideRequest;
+    private User uniqueUser, userToBeVerified;
+    private RegisterRequest uniqueRequest;
     @BeforeEach
     void setUp() {
         LocalDateTime createdAt = LocalDateTime.now().minusMinutes(10);
@@ -56,24 +54,6 @@ class RegisterServiceTest {
                 .role(UserType.CUSTOMER)
                 .verificationCode(null)
                 .isEnabled(true)
-                .createdAt(createdAt)
-                .build();
-
-        tourGuideRequest = RegisterRequest.builder()
-                .username("testUsername")
-                .email("test@test.com")
-                .password("testPassword")
-                .role("Tour Guide")
-                .build();
-
-        tourGuideUser = User.builder()
-                .id(1)
-                .username("testUsername")
-                .email("test@test.com")
-                .password("testPassword")
-                .role(UserType.TOURGUIDE)
-                .verificationCode("0123456789")
-                .isEnabled(false)
                 .createdAt(createdAt)
                 .build();
 
@@ -111,19 +91,21 @@ class RegisterServiceTest {
     }
 
     @Test
-    void whenRegisterTourGuideShouldBeFoundInRepository() throws MessagingException, UnsupportedEncodingException {
-        var mockService = Mockito.mock(RegisterServiceImpl.class);
-        // Set behaviour of saving user in which the id is set to 1
+    void whenRegisterNonVerifiedUserShouldNotGenerateVerificationCode() {
+        UserType role = UserType.CUSTOMER;
 
-        when(mockService.register(tourGuideRequest)).thenReturn(RegisterResponse.builder().user(tourGuideUser).build());
-        // Save the tour guide user
-        var results = mockService.register(tourGuideRequest);
-        var result = results.getUser();
+        var res = service.presetBeforeCreating(role);
 
-        Assertions.assertEquals(tourGuideUser.getId(), result.getId());
-        Assertions.assertEquals(tourGuideUser.getEmail(), result.getEmail());
-        Assertions.assertEquals(tourGuideUser.getUsername(), result.getUsername());
-        Assertions.assertEquals(tourGuideUser.getRole(), result.getRole());
+        Assertions.assertNull(res);
+    }
+    @Test
+    void whenRegisterVerifiedUserShouldGenerateVerificationCode() {
+        UserType role = UserType.TOURGUIDE;
+
+        var res = service.presetBeforeCreating(role);
+
+        Assertions.assertNotNull(res);
+        Assertions.assertEquals(10, res.length());
     }
 
     @Test

@@ -18,7 +18,7 @@ public class EditBirthDateValidator implements IValidator {
         String birthDate = request.getBirthDate();
         if (birthDate == null) return null;
         try {
-            LocalDate dateOfBirth = LocalDate.parse(birthDate, java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            var dateOfBirth = LocalDate.parse(birthDate, java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             int age = LocalDate.now().getYear() - dateOfBirth.getYear();
             if (age < 13 || age > 100) {
                 throw new AgeRestrictionException();

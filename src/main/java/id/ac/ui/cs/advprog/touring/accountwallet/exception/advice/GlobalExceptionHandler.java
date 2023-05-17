@@ -2,6 +2,15 @@ package id.ac.ui.cs.advprog.touring.accountwallet.exception.advice;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.*;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.*;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.forgotpassword.InvalidOTPCodeException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.forgotpassword.WrongOTPCodeException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.InvalidTokenException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserAlreadyLoggedInException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.WrongPasswordException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.UserDoesExistException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.UserHasBeenVerifiedException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.VerificationInvalidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,7 +32,9 @@ public class GlobalExceptionHandler {
             InvalidPhoneNumFormatException.class,
             InvalidUsernameFormatException.class,
             UsernameAlreadyUsedException.class,
-            UsernameEmptyInputException.class
+            UsernameEmptyInputException.class,
+            InvalidOTPCodeException.class,
+            WrongOTPCodeException.class
     })
     public ResponseEntity<Object> definedException(Exception exception) {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;

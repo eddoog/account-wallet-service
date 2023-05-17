@@ -1,10 +1,8 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.edit_profile;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditUsernameRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditUsernameRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditProfileResponse;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserNotFoundException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.AgeRestrictionException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.InvalidUsernameFormatException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.UsernameAlreadyUsedException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.UsernameEmptyInputException;
@@ -12,8 +10,6 @@ import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 import id.ac.ui.cs.advprog.touring.accountwallet.service.EditProfileServiceImpl;
-import id.ac.ui.cs.advprog.touring.accountwallet.service.RegisterService;
-import id.ac.ui.cs.advprog.touring.accountwallet.service.RegisterServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,13 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.exception;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.advice.GlobalExceptionHandler;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.InvalidTokenException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserAlreadyLoggedInException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.WrongPasswordException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.UserDoesExistException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.UserHasBeenVerifiedException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.VerificationInvalidException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
