@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.core.utils;
 
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.register.CodeGenerator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.core.builder;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.register.RegisterResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.builder.RegisterBuilderRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import jakarta.mail.MessagingException;
@@ -18,7 +18,7 @@ public abstract class UserBuilder {
         return createUser(request, newUser);
     }
 
-    private User setDefinedUser(User user, RegisterBuilderRequest request) {
+    User setDefinedUser(User user, RegisterBuilderRequest request) {
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
         user.setRole(request.getRole());

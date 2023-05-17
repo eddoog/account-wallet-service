@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.core.utils;
 
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.register.PasswordEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

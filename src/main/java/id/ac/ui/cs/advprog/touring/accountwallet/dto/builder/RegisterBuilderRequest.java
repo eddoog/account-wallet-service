@@ -5,7 +5,6 @@ import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.Optional;

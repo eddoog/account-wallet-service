@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.core.utils;
 
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.login.TokenGenerator;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

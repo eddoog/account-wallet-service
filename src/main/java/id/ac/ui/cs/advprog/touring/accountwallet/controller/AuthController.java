@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.controller;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.*;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.*;
 import id.ac.ui.cs.advprog.touring.accountwallet.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

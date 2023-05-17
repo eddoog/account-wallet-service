@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.controller;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.register.RegisterRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.register.RegisterResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.service.RegisterService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;

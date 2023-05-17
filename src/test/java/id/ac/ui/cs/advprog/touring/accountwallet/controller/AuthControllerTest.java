@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.*;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.*;
 import id.ac.ui.cs.advprog.touring.accountwallet.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
