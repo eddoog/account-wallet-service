@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.exception;
+package id.ac.ui.cs.advprog.touring.accountwallet.exception.wallet;
 
 public class CurrencyNotSupportedException extends RuntimeException {
     public CurrencyNotSupportedException(String currencyType) {

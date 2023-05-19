@@ -1,29 +1,27 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.service;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.editProfile.IVerifier;
-import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.editProfile.PersonalDataVerifier;
-import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.editProfile.UsernameVerifier;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.WalletRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.WalletResponse;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditPersonalDataRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditProfileResponse;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.editProfile.EditUsernameRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserNotFoundException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.UsernameAlreadyUsedException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.editProfile.UsernameEmptyInputException;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.CurrencyConverter;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.EuroCurrencyConverter;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.IDRCurrencyConverter;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.USDCurrencyConverter;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.wallet.CurrencyNotSupportedException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
     private final UserRepository userRepository;
+    CurrencyConverter currencyStrategy;
+    Integer amountConverted;
 
     @Override
     public WalletResponse topUp(WalletRequest request) {
@@ -35,9 +33,34 @@ public class WalletServiceImpl implements WalletService {
 
         User user = userOptional.get();
 
+        switch (request.getCurrencyType().toLowerCase()) {
+            case "euro" -> {
+                currencyStrategy = new EuroCurrencyConverter();
+                amountConverted = currencyStrategy.getConvertedCurrency(request.getAmount());
+            }
+            case "united states dollar" -> {
+                currencyStrategy = new USDCurrencyConverter();
+                amountConverted = currencyStrategy.getConvertedCurrency(request.getAmount());
+            }
+            case "indonesian rupiah" -> {
+                currencyStrategy = new IDRCurrencyConverter();
+                amountConverted = currencyStrategy.getConvertedCurrency(request.getAmount());
+            }
+            default ->
+                throw new CurrencyNotSupportedException(request.getCurrencyType());
+        }
+
+        if (user.getWalletAmount() == null) {
+            user.setWalletAmount(amountConverted);
+        } else {
+            user.setWalletAmount(user.getWalletAmount() + amountConverted);
+        }
+
+        userRepository.save(user);
+
         return WalletResponse.builder()
                 .user(user)
-                .message("Your profile editing has completed")
+                .message("Top up of " + amountConverted + " IDR successful")
                 .build();
     }
 }

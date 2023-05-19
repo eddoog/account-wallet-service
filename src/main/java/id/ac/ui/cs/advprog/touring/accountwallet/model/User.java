@@ -50,4 +50,6 @@ public class User {
     private String gender;
     @Column()
     private String domicile;
+    @Column(columnDefinition = "integer default 0")
+    private Integer walletAmount;
 }
