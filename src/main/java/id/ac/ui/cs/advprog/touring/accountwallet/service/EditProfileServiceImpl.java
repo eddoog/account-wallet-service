@@ -3,6 +3,8 @@ package id.ac.ui.cs.advprog.touring.accountwallet.service;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.edit_profile.IVerifier;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.edit_profile.PersonalDataVerifier;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.edit_profile.UsernameVerifier;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.ProfileRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.ProfileResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditPersonalDataRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditProfileResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditUsernameRequest;
@@ -89,6 +91,20 @@ public class EditProfileServiceImpl implements EditProfileService {
         return EditProfileResponse.builder()
                 .user(user)
                 .message("Your username editing has completed")
+                .build();
+    }
+
+    @Override
+    public ProfileResponse getProfile(ProfileRequest request){
+        String email = request.getEmail();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()){
+            throw new UserNotFoundException(email);
+        }
+        var user = userOptional.get();
+
+        return ProfileResponse.builder()
+                .user(user)
                 .build();
     }
 }
