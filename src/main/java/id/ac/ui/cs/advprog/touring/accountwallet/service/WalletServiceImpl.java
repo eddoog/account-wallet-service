@@ -4,8 +4,10 @@ import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.CurrencyConverter;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.EuroCurrencyConverter;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.IDRCurrencyConverter;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.USDCurrencyConverter;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletApprovalRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTopUpRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTransferRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.wallet.CurrencyNotSupportedException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
@@ -24,7 +26,7 @@ public class WalletServiceImpl implements WalletService {
     Integer amountConverted;
 
     @Override
-    public WalletResponse topUp(WalletRequest request) {
+    public WalletResponse topUp(WalletTopUpRequest request) {
         String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty()){
@@ -50,17 +52,52 @@ public class WalletServiceImpl implements WalletService {
                 throw new CurrencyNotSupportedException(request.getCurrencyType());
         }
 
-        if (user.getWalletAmount() == null) {
-            user.setWalletAmount(amountConverted);
-        } else {
-            user.setWalletAmount(user.getWalletAmount() + amountConverted);
-        }
+        user.setWalletAmount(user.getWalletAmount() + amountConverted);
 
         userRepository.save(user);
 
         return WalletResponse.builder()
                 .user(user)
                 .message("Top up of " + amountConverted + " IDR successful")
+                .build();
+    }
+
+    @Override
+    public WalletResponse transfer(WalletTransferRequest request) {
+        String email = request.getEmail();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()){
+            throw new UserNotFoundException(email);
+        }
+
+        User user = userOptional.get();
+
+        return WalletResponse.builder()
+                .user(user)
+                .message("Top up of " + amountConverted + " IDR successful")
+                .build();
+    }
+
+    @Override
+    public WalletResponse approval(WalletApprovalRequest request) {
+        String email = request.getEmail();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()){
+            throw new UserNotFoundException(email);
+        }
+
+        User user = userOptional.get();
+
+        if (request.getApproval()) {
+            user.setWalletAmount(user.getWalletAmount() + request.getAmount());
+            return WalletResponse.builder()
+                    .user(user)
+                    .message("Top up of " + request.getAmount() + " IDR successful")
+                    .build();
+        }
+        return WalletResponse.builder()
+                .user(user)
+                .message("Top up of " + request.getAmount() + " IDR successful")
                 .build();
     }
 }

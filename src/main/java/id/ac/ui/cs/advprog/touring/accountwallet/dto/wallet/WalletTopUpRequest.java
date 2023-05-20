@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WalletRequest {
+public class WalletTopUpRequest {
     private String email;
     private Integer amount;
     private String currencyType;
