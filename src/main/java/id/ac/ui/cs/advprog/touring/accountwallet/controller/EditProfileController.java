@@ -18,6 +18,7 @@ public class EditProfileController {
     private final EditProfileService editProfileService;
 
     @GetMapping("/profile")
+    @CrossOrigin(maxAge = 3600)
     public ResponseEntity<ProfileResponse> getProfile(@RequestBody ProfileRequest request) {
         ProfileResponse response = editProfileService.getProfile(request);
         return ResponseEntity.ok(response);
@@ -31,6 +32,7 @@ public class EditProfileController {
     }
 
     @PutMapping("/update/username")
+    @CrossOrigin(maxAge = 3600)
     public ResponseEntity<EditProfileResponse> editUsername(@RequestBody EditUsernameRequest request) {
         EditProfileResponse response = editProfileService.editUsername(request);
         return ResponseEntity.ok(response);
