@@ -1,22 +1,24 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.repository;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletApprovalRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTopUpRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTransferRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class WalletRepository {
-    private List<WalletApprovalRequest> approvalList = new ArrayList<>();
-    private List<WalletTopUpRequest> topUpHistory = new ArrayList<>();
+    private final Map<Integer, WalletApprovalRequest> approvalList = new HashMap<>();
+    private final List<WalletTransferRequest> topUpHistory = new ArrayList<>();
 
-    public List<WalletTopUpRequest> getTopUpHistory() {
+    public List<WalletTransferRequest> getTopUpHistory() {
         return topUpHistory;
     }
 
-    public List<WalletApprovalRequest> getApprovalList() {
+    public Map<Integer, WalletApprovalRequest> getApprovalList() {
         return approvalList;
     }
 }
