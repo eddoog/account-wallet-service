@@ -10,28 +10,26 @@ import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTransferRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.wallet.*;
+import id.ac.ui.cs.advprog.touring.accountwallet.model.TopUpApproval;
+import id.ac.ui.cs.advprog.touring.accountwallet.model.Transaction;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
+import id.ac.ui.cs.advprog.touring.accountwallet.repository.TopUpApprovalRepository;
+import id.ac.ui.cs.advprog.touring.accountwallet.repository.TransactionRepository;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
     private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
+    private final TopUpApprovalRepository topUpApprovalRepository;
     CurrencyConverter currencyStrategy;
     Integer amountConverted;
-    Integer approvalListIndex = 0;
-    @Autowired
-    private WalletRepository walletRepository;
 
     @Override
     public WalletResponse topUp(WalletTopUpRequest request) {
@@ -60,17 +58,8 @@ public class WalletServiceImpl implements WalletService {
                 throw new CurrencyNotSupportedException(request.getCurrencyType());
         }
 
-        getTopUpHistory().add(WalletTransferRequest.builder()
-                                                .email(request.getEmail())
-                                                .amount(amountConverted)
-                                                .build());
-
-        getApprovalList().put(approvalListIndex, WalletApprovalRequest.builder()
-                                        .email(request.getEmail())
-                                        .amount(amountConverted)
-                                        .approval(null)
-                                        .index(approvalListIndex++)
-                                        .build());
+        TopUpApproval topUpApproval = TopUpApproval.builder().user(user).transactionAmount(amountConverted).build();
+        topUpApprovalRepository.save(topUpApproval);
 
         userRepository.save(user);
 
@@ -99,10 +88,8 @@ public class WalletServiceImpl implements WalletService {
 
         user.setWalletAmount(user.getWalletAmount() - request.getAmount());
 
-        getTopUpHistory().add(WalletTransferRequest.builder()
-                .email(request.getEmail())
-                .amount(request.getAmount() * -1)
-                .build());
+        Transaction transaction = Transaction.builder().user(user).transactionAmount(request.getAmount() * -1).build();
+        transactionRepository.save(transaction);
 
         userRepository.save(user);
 
@@ -122,37 +109,32 @@ public class WalletServiceImpl implements WalletService {
 
         User user = userOptional.get();
 
-        if (!(getApprovalList().containsKey(request.getIndex()))) {
-            throw new IndexNotFoundException();
-        }
-        WalletApprovalRequest indexedWalletApprovalRequest = getApprovalList().get(request.getIndex());
-
-        if ((!(indexedWalletApprovalRequest.getEmail().equalsIgnoreCase(request.getEmail()))) ||
-                (!Objects.equals(indexedWalletApprovalRequest.getAmount(), request.getAmount()))) {
-            throw new IncorrectDataException();
-        }
-
         if (Boolean.FALSE.equals(request.getApproval())) {
             throw new ApprovalRejectedException();
         }
 
-        user.setWalletAmount(user.getWalletAmount() + request.getAmount());
-        userRepository.save(user);
+        for (TopUpApproval TopUpApproval: topUpApprovalRepository.findAll()) {
+            if ((TopUpApproval.getUser().getEmail().equalsIgnoreCase(request.getEmail())) &&
+                    TopUpApproval.getTransactionAmount() == request.getAmount())
+            {
+                user.setWalletAmount(user.getWalletAmount() + request.getAmount());
+                userRepository.save(user);
 
-        getApprovalList().remove(request.getIndex());
+                Transaction approvedTransaction = Transaction.builder()
+                        .user(user)
+                        .transactionAmount(request.getAmount())
+                        .build();
+                transactionRepository.save(approvedTransaction);
 
-        return WalletResponse.builder()
-                .user(user)
-                .message("Approval accepted, "
-                        + request.getAmount() + " IDR has been added to " + request.getEmail())
-                .build();
-    }
+                topUpApprovalRepository.deleteById(TopUpApproval.getId());
 
-    public List<WalletTransferRequest> getTopUpHistory() {
-        return walletRepository.getTopUpHistory();
-    }
-
-    public Map<Integer, WalletApprovalRequest> getApprovalList() {
-        return walletRepository.getApprovalList();
+                return WalletResponse.builder()
+                        .user(user)
+                        .message("Approval accepted, "
+                                + request.getAmount() + " IDR has been added to " + request.getEmail())
+                        .build();
+            }
+        }
+        throw new IncorrectDataException();
     }
 }

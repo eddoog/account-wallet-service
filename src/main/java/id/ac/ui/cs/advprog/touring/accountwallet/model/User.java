@@ -3,7 +3,6 @@ package id.ac.ui.cs.advprog.touring.accountwallet.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
