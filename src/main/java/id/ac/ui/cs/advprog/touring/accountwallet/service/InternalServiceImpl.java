@@ -42,11 +42,9 @@ public class InternalServiceImpl implements InternalService {
         try {
             return new UsersResponse(completableFuture.get());
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // We don't care it fails...for now
         } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // We don't care it fails...for now
         }
         return new UsersResponse(new ArrayList<>());
     }
