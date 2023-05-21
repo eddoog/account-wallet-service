@@ -13,9 +13,12 @@ import id.ac.ui.cs.advprog.touring.accountwallet.exception.wallet.CurrencyNotSup
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 
+import id.ac.ui.cs.advprog.touring.accountwallet.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +27,8 @@ public class WalletServiceImpl implements WalletService {
     private final UserRepository userRepository;
     CurrencyConverter currencyStrategy;
     Integer amountConverted;
+    @Autowired
+    private WalletRepository walletRepository;
 
     @Override
     public WalletResponse topUp(WalletTopUpRequest request) {
@@ -72,9 +77,16 @@ public class WalletServiceImpl implements WalletService {
 
         User user = userOptional.get();
 
+        if (user.getWalletAmount() < request.getAmount()) {
+            return WalletResponse.builder()
+                    .user(user)
+                    .message("Insufficient funds")
+                    .build();
+        }
+        user.setWalletAmount(user.getWalletAmount() - request.getAmount());
         return WalletResponse.builder()
                 .user(user)
-                .message("Top up of " + amountConverted + " IDR successful")
+                .message("Transaction successful, " + amountConverted + " has been deducted")
                 .build();
     }
 
@@ -92,12 +104,21 @@ public class WalletServiceImpl implements WalletService {
             user.setWalletAmount(user.getWalletAmount() + request.getAmount());
             return WalletResponse.builder()
                     .user(user)
-                    .message("Top up of " + request.getAmount() + " IDR successful")
+                    .message("Approval accepted, "
+                                + request.getAmount() + " IDR has been added to " + request.getEmail())
                     .build();
         }
         return WalletResponse.builder()
                 .user(user)
-                .message("Top up of " + request.getAmount() + " IDR successful")
+                .message("Approval rejected")
                 .build();
+    }
+
+    public List<WalletTopUpRequest> getTopUpHistory() {
+        return walletRepository.getTopUpHistory();
+    }
+
+    public List<WalletApprovalRequest> getApprovalList() {
+        return walletRepository.getApprovalList();
     }
 }
