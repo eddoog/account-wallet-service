@@ -24,6 +24,7 @@ public class EditProfileController {
     }
 
     @PutMapping("/update/personalData")
+    @CrossOrigin(maxAge = 3600)
     public ResponseEntity<EditProfileResponse> editPersonalData(@RequestBody EditPersonalDataRequest request) {
         EditProfileResponse response = editProfileService.editPersonalData(request);
         return ResponseEntity.ok(response);

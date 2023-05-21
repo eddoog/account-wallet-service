@@ -12,7 +12,7 @@ public class EditPhoneNumValidator implements IValidator {
     @Override
     public String validate(){
         String phoneNum = request.getPhoneNum();
-        if (phoneNum == null) return null;
+        if (phoneNum == null || phoneNum.equals("")) return null;
         if (!phoneNum.matches("\\d+")) {
             throw new InvalidPhoneNumFormatException();
         }

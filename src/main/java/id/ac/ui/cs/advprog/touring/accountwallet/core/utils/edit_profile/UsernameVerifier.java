@@ -11,7 +11,7 @@ public class UsernameVerifier implements IVerifier {
         usernameV = new EditUsernameValidator(request);
     }
 
-    public List<String> verify() {
+    public synchronized List<String> verify() {
         List<String> verifiedData = new ArrayList<>();
         String verified = usernameV.validate();
         verifiedData.add(verified);
