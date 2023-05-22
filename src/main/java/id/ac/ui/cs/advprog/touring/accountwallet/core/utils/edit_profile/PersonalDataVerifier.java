@@ -17,7 +17,7 @@ public class PersonalDataVerifier implements IVerifier {
         this.steps.add(birthDateV);
     }
 
-    public List<String> verify() {
+    public synchronized List<String> verify() {
         List<String> verifiedData = new ArrayList<>();
         for(IValidator t : steps){
             String verified = t.validate();

@@ -16,7 +16,7 @@ public class EditBirthDateValidator implements IValidator {
     @Override
     public String validate(){
         String birthDate = request.getBirthDate();
-        if (birthDate == null) return null;
+        if (birthDate == null || birthDate.equals("")) return null;
         try {
             var dateOfBirth = LocalDate.parse(birthDate, java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             int age = LocalDate.now().getYear() - dateOfBirth.getYear();

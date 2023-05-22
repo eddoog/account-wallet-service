@@ -10,8 +10,8 @@ public class EditFullNameValidator implements IValidator {
     }
     public String validate(){
         String name = request.getFullName();
-        if (name == null) return null;
-        var spaceCount = 0;
+        if (name == null || name.equals("")) return null;
+        int spaceCount = 0;
 
         for (var i = 0; i < name.length(); i++) {
             var c = name.charAt(i);
