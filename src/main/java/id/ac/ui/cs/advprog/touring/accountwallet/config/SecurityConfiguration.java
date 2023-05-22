@@ -29,7 +29,7 @@ public class SecurityConfiguration {
                 .cors()
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**", "/api/v1/internal/**")
+                .requestMatchers("/docs/**","/api/v1/auth/**", "/api/v1/internal/**")
                 .permitAll();
 
         return http.build();

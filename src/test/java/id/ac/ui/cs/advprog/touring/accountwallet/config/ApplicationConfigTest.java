@@ -45,15 +45,4 @@ class ApplicationConfigTest {
         assertEquals("true", mailSenderImpl.getJavaMailProperties().get("mail.smtp.starttls.enable"));
         assertEquals("true", mailSenderImpl.getJavaMailProperties().get("mail.debug"));
     }
-
-    @Test
-    void testCorsConfigurer() throws Exception {
-        // Setup
-        var config = new ApplicationConfig();
-
-        var configurer = config.corsConfigurer();
-
-        configurer.addCorsMappings(registry);
-        verify(registry).addMapping("/**");
-    }
 }

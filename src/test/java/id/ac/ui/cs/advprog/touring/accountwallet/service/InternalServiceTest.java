@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class InternalServiceTest {
+class InternalServiceTest {
     @InjectMocks
     private InternalServiceImpl service;
 
@@ -77,11 +77,11 @@ public class InternalServiceTest {
     void whenUserDoesNotExistShouldReturnJustExisting() {
         when(mockUserRepository.findById(any(Integer.class))).thenAnswer(invocation -> Optional.ofNullable(null));
         var users = service.fetchUserIds(new Integer[] { 9 });
-        Assertions.assertEquals(users.getUsers().size(), 0);
+        Assertions.assertEquals(0, users.getUsers().size());
 
-        when(mockUserRepository.findById(eq(1))).thenAnswer(invocation -> Optional.of(user1));
-        when(mockUserRepository.findById(eq(3))).thenAnswer(invocation -> Optional.ofNullable(null));
+        when(mockUserRepository.findById((1))).thenAnswer(invocation -> Optional.of(user1));
+        when(mockUserRepository.findById((3))).thenAnswer(invocation -> Optional.ofNullable(null));
         users = service.fetchUserIds(new Integer[] { 1, 3 });
-        Assertions.assertEquals(users.getUsers().size(), 1);
+        Assertions.assertEquals(1, users.getUsers().size());
     }
 }

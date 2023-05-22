@@ -1,8 +1,7 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.core.utils;
+package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.forgotpassword;
 
 import static org.mockito.Mockito.*;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.register.SendVerificationEmail;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import jakarta.mail.Address;
 import jakarta.mail.MessagingException;
@@ -20,24 +19,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 
 @ExtendWith(MockitoExtension.class)
-class SendVerificationEmailTest {
+class SendOTPEmailTest {
     @Mock
     private User mockUser;
+    Integer otpCode;
     @Mock
     private JavaMailSender mockMailSender;
     @InjectMocks
-    private SendVerificationEmail sendVerificationEmail;
+    private SendOTPEmail sendOTPEmail;
 
     @BeforeEach
     void setUp() {
         // Set up mock user object
         when(mockUser.getUsername()).thenReturn("Alfredo");
-        when(mockUser.getVerificationCode()).thenReturn("0123456789");
+        otpCode = 123456;
 
-        String siteURL = "http://localhost:3000/auth";
 
         // Initialize SendVerificationEmail instance with mock objects
-        sendVerificationEmail = new SendVerificationEmail(mockUser, siteURL, mockMailSender);
+        sendOTPEmail = new SendOTPEmail(mockUser, otpCode, mockMailSender);
     }
 
     @Test
@@ -48,25 +47,25 @@ class SendVerificationEmailTest {
 
         when(mockUser.getEmail()).thenReturn("alfredo.austin@ui.ac.id");
 
-        sendVerificationEmail.execute();
+        sendOTPEmail.execute();
 
         verify(mockMailSender).send(message);
     }
 
     @Test
     void testGetContent() {
-        String content = sendVerificationEmail.getContent();
+        String content = sendOTPEmail.getContent();
 
         // Verify that the content contains the correct information
         String expectedContent = "Dear Alfredo,<br>" +
-                "Please click the link below to verify your registration:<br>" +
+                "Please use this OTP Code to reset your password:<br>" +
                 "<h4>" +
-                "<a href=\"http://localhost:3000/auth/verify?code=0123456789\" target=\"_blank\">Click this to complete the verification process</a>" +
+                "<h2>123456</h2>" +
                 "</h4>" +
                 "Thank you,<br>" +
                 "A17 Account Wallet.";
 
-        Assertions.assertEquals(content, expectedContent);
+        Assertions.assertEquals(expectedContent, content);
     }
 
     @Test
@@ -75,11 +74,11 @@ class SendVerificationEmailTest {
 
         when(mockUser.getEmail()).thenReturn("alfredo.austin@ui.ac.id");
 
-        String content = sendVerificationEmail.getContent();
+        String content = sendOTPEmail.getContent();
 
         when(mockMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
-        MimeMessage message = sendVerificationEmail.getMessage(content);
+        MimeMessage message = sendOTPEmail.getMessage(content);
 
         when(message.getSubject()).thenReturn("Please verify your registration");
         when(message.getFrom()).thenReturn(new Address[] { new InternetAddress("A17 Account Wallet <adproa17@gmail.com>") });

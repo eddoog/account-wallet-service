@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.core.utils;
+package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.login;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.login.TokenGenerator;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
