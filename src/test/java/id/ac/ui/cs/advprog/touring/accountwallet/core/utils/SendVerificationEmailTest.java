@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.touring.accountwallet.core.utils;
 
 import static org.mockito.Mockito.*;
 
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.register.SendVerificationEmail;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import jakarta.mail.Address;
 import jakarta.mail.MessagingException;

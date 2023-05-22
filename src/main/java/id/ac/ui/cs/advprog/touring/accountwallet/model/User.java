@@ -2,10 +2,8 @@ package id.ac.ui.cs.advprog.touring.accountwallet.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 
@@ -50,4 +48,8 @@ public class User {
     private String gender;
     @Column()
     private String domicile;
+
+    @Value("0")
+    @Column()
+    private double walletAmount;
 }

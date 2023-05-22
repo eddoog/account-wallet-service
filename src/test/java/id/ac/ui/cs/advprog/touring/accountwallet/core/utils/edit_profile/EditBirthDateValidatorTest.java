@@ -2,8 +2,7 @@ package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.edit_profile;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditPersonalDataRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditProfileResponse;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditUsernameRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserNotFoundException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.AgeRestrictionException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.edit_profile.InvalidBirthDateFormatException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;

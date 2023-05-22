@@ -1,10 +1,10 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.service;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.core.AuthManager;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.*;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.InvalidTokenException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserNotFoundException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.WrongPasswordException;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.*;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.InvalidTokenException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.WrongPasswordException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.Session;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.SessionRepository;

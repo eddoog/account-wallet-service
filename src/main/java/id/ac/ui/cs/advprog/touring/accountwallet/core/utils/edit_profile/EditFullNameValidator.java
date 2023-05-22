@@ -13,8 +13,8 @@ public class EditFullNameValidator implements IValidator {
         if (name == null || name.equals("")) return null;
         int spaceCount = 0;
 
-        for (int i = 0; i < name.length(); i++) {
-            char c = name.charAt(i);
+        for (var i = 0; i < name.length(); i++) {
+            var c = name.charAt(i);
             if (!Character.isLetter(c) && !Character.isWhitespace(c)) {
                 throw new InvalidFullNameFormatException();
             }

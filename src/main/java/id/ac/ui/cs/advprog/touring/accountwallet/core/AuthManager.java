@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.core;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.AuthTool;
-import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.TokenGenerator;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.login.TokenGenerator;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

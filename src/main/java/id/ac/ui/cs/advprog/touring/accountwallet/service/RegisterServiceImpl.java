@@ -1,19 +1,20 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.service;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.core.RegisterManager;
-import id.ac.ui.cs.advprog.touring.accountwallet.core.builder.CustomerBuilder;
-import id.ac.ui.cs.advprog.touring.accountwallet.core.builder.TourGuideBuilder;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.builder.NonVerifiedUserBuilder;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.builder.UserBuilder;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.RegisterResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.builder.VerifiedUserBuilder;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.register.RegisterRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.register.RegisterResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.builder.RegisterBuilderRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserDoesExistException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.UserHasBeenVerifiedException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.VerificationInvalidException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.UserDoesExistException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.UserHasBeenVerifiedException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.VerificationInvalidException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 import jakarta.mail.MessagingException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class RegisterServiceImpl implements RegisterService {
-    @Autowired
     private JavaMailSender mailSender;
     private final UserRepository userRepository;
     private final RegisterManager registerManager = RegisterManager.getInstance();
@@ -36,9 +36,14 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Value("${verification-domain}")
     private String siteURL;
+    @Autowired
+    public RegisterServiceImpl(JavaMailSender mailSender, UserRepository userRepository) {
+        this.mailSender = mailSender;
+        this.userRepository = userRepository;
+    }
 
     @Override
-    public RegisterResponse register(RegisterRequest request) throws MessagingException, UnsupportedEncodingException {
+    public RegisterResponse register(@NonNull RegisterRequest request) throws MessagingException, UnsupportedEncodingException {
         String email = request.getEmail();
         String password = request.getPassword();
         String username = request.getUsername();
@@ -46,7 +51,7 @@ public class RegisterServiceImpl implements RegisterService {
 
         var optionalUser = doesUserExist(email);
 
-        if (optionalUser.isPresent() && optionalUser.get().getIsEnabled().booleanValue()) throw new UserDoesExistException(email);
+        if (optionalUser.isPresent() && Boolean.TRUE.equals(optionalUser.get().getIsEnabled())) throw new UserDoesExistException(email);
 
         String encryptedPassword = registerManager.encryptPassword(password);
 
@@ -54,15 +59,15 @@ public class RegisterServiceImpl implements RegisterService {
 
         RegisterResponse response = userBuilder.buildUser(
                 RegisterBuilderRequest.builder()
-                .email(email)
-                .password(encryptedPassword)
-                .username(username)
-                .role(role)
-                .verificationCode(verificationCode)
-                .siteURL(siteURL)
-                .userIfAlreadyBeenMade(optionalUser)
-                .mailSender(mailSender)
-                .build()
+                        .email(email)
+                        .password(encryptedPassword)
+                        .username(username)
+                        .role(role)
+                        .verificationCode(verificationCode)
+                        .siteURL(siteURL)
+                        .userIfAlreadyBeenMade(optionalUser)
+                        .mailSender(mailSender)
+                        .build()
         );
 
         userRepository.save(response.getUser());
@@ -78,7 +83,7 @@ public class RegisterServiceImpl implements RegisterService {
 
         var user = userOptional.get();
 
-        if (user.getIsEnabled().booleanValue()) throw new UserHasBeenVerifiedException();
+        if (Boolean.TRUE.equals(user.getIsEnabled())) throw new UserHasBeenVerifiedException();
 
         long checkDuration = Duration.between(user.getCreatedAt(), LocalDateTime.now()).toMinutes();
 
@@ -99,17 +104,17 @@ public class RegisterServiceImpl implements RegisterService {
         return userRepository.findByEmail(email);
     }
 
-    private String presetBeforeCreating(UserType role) {
+    String presetBeforeCreating(@NonNull UserType role) {
         String verificationCode;
 
         boolean isCustomer = role.toString().equals(UserType.CUSTOMER.toString());
 
         if (isCustomer) {
             verificationCode = null;
-            userBuilder = new CustomerBuilder();
+            userBuilder = new NonVerifiedUserBuilder();
         } else {
             verificationCode = registerManager.generateVerificationCode();
-            userBuilder = new TourGuideBuilder();
+            userBuilder = new VerifiedUserBuilder();
         }
 
         return verificationCode;
