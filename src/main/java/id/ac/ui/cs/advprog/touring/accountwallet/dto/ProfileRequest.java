@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet;
+package id.ac.ui.cs.advprog.touring.accountwallet.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WalletApprovalRequest {
+public class ProfileRequest {
     private String email;
-    private Integer amount;
-    private Boolean approval;
 }

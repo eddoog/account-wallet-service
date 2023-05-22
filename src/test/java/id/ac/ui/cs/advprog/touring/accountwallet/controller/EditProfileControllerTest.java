@@ -1,6 +1,8 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.ProfileRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.ProfileResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditPersonalDataRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditProfileResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditUsernameRequest;
@@ -21,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDateTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,6 +45,23 @@ class EditProfileControllerTest {
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(editProfileController).build();
         objectMapper = new ObjectMapper();
+    }
+
+    @Test
+    void testGetProfile() throws Exception {
+        ProfileRequest request = ProfileRequest.builder()
+                .email("test@example.com")
+                .build();
+
+        ProfileResponse response = ProfileResponse.builder()
+                .build();
+
+        when(editProfileService.getProfile(request)).thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/auth/editProfile/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
     }
 
     @Test
