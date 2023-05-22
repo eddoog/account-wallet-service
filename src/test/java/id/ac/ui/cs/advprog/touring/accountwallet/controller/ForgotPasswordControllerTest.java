@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class ForgotPasswordControllerTest {
+class ForgotPasswordControllerTest {
     @InjectMocks
     private ForgotPasswordController forgotPasswordController;
     private MockMvc mvc;
