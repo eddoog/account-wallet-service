@@ -27,22 +27,19 @@ public class InternalServiceImpl implements InternalService {
         }
 
         var allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
-        CompletableFuture<List<Optional<User>>> allCompletableFuture = allFutures.thenApply(future -> {
-            return futures.stream()
-                    .map(completableFuture -> completableFuture.join())
-                    .collect(Collectors.toList());
-        });
+        CompletableFuture<List<Optional<User>>> allCompletableFuture = allFutures.thenApply(future -> futures.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList()));
 
-        var completableFuture = allCompletableFuture.thenApply(users -> {
-            return users.stream()
-                    .filter(obj -> obj.isPresent())
-                    .map(obj -> obj.get()).collect(Collectors.toList());
-        });
+        var completableFuture = allCompletableFuture.thenApply(users -> users.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get).collect(Collectors.toList()));
 
         try {
             return new UsersResponse(completableFuture.get());
         } catch (InterruptedException e) {
             // We don't care it fails...for now
+            Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
             // We don't care it fails...for now
         }

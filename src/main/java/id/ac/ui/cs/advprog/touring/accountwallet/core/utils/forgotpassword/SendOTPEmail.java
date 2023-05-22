@@ -28,7 +28,7 @@ public class SendOTPEmail implements EmailTool {
         mailSender.send(message);
     }
 
-    String getContent() {
+    public String getContent() {
         return String.format(
                 "Dear %s,<br>" +
                         "Please use this OTP Code to reset your password:<br>" +
@@ -42,7 +42,7 @@ public class SendOTPEmail implements EmailTool {
         );
     }
 
-    MimeMessage getMessage(String content) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage getMessage(String content) throws MessagingException, UnsupportedEncodingException {
         var message = mailSender.createMimeMessage();
         var helper = new MimeMessageHelper(message);
         helper.setFrom("adproa17@gmail.com", "A17 Account Wallet");

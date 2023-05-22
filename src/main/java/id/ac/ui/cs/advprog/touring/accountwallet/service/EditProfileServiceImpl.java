@@ -27,7 +27,7 @@ public class EditProfileServiceImpl implements EditProfileService {
     @Override
     public EditProfileResponse editPersonalData(EditPersonalDataRequest request) {
         String email = request.getEmail();
-        User user = getUserByEmail(email);
+        var user = getUserByEmail(email);
 
         IVerifier verifier = new PersonalDataVerifier(request);
         List<String> verified = verifier.verify();
@@ -35,8 +35,8 @@ public class EditProfileServiceImpl implements EditProfileService {
         user.setFullName(getUpdatedValue(user.getFullName(), verified.get(0)));
         user.setPhoneNum(getUpdatedValue(user.getPhoneNum(), verified.get(1)));
         user.setBirthDate(getUpdatedValue(user.getBirthDate(), verified.get(2)));
-        user.setGender(request.getGender() != null || request.getGender().equals("") ? request.getGender() : user.getGender());
-        user.setDomicile(request.getDomicile() != null || request.getDomicile().equals("") ? request.getDomicile() : user.getDomicile());
+        user.setGender((request.getGender() != null && !request.getGender().equals("")) ? request.getGender() : user.getGender());
+        user.setDomicile((request.getDomicile() != null && !request.getDomicile().equals("")) ? request.getDomicile() : user.getDomicile());
         userRepository.save(user);
 
         return EditProfileResponse.builder()
@@ -48,7 +48,7 @@ public class EditProfileServiceImpl implements EditProfileService {
     @Override
     public EditProfileResponse editUsername(EditUsernameRequest request) {
         String email = request.getEmail();
-        User user = getUserByEmail(email);
+        var user = getUserByEmail(email);
 
         String username = user.getUsername();
 
@@ -73,7 +73,7 @@ public class EditProfileServiceImpl implements EditProfileService {
     @Override
     public ProfileResponse getProfile(ProfileRequest request) {
         String email = request.getEmail();
-        User user = getUserByEmail(email);
+        var user = getUserByEmail(email);
 
         return ProfileResponse.builder()
                 .user(user)
@@ -89,7 +89,7 @@ public class EditProfileServiceImpl implements EditProfileService {
     }
 
     private String getUpdatedValue(String currentValue, String newValue) {
-        return newValue != null ? newValue : currentValue;
+        return newValue != null && !newValue.equals("") ? newValue : currentValue;
     }
 
     private void validateUsernameInput(String currentUsername, String newUsername) {

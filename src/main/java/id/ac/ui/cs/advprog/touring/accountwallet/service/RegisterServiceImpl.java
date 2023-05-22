@@ -43,7 +43,7 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public RegisterResponse register(@NonNull RegisterRequest request) throws MessagingException, UnsupportedEncodingException {
+    public synchronized RegisterResponse register(@NonNull RegisterRequest request) throws MessagingException, UnsupportedEncodingException {
         String email = request.getEmail();
         String password = request.getPassword();
         String username = request.getUsername();
@@ -76,7 +76,7 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public RegisterResponse verify(String verificationCode) {
+    public synchronized RegisterResponse verify(String verificationCode) {
         var userOptional = userRepository.findByVerificationCode(verificationCode);
 
         if (userOptional.isEmpty()) throw new VerificationInvalidException();

@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.touring.accountwallet.core.utils;
+package id.ac.ui.cs.advprog.touring.accountwallet.core.utils.register;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.register.PasswordEncryptor;
 import org.junit.jupiter.api.Test;

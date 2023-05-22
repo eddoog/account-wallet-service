@@ -103,16 +103,16 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         return userRepository.findByEmail(email);
     }
 
-    private Integer getOTPCode() throws NoSuchAlgorithmException {
+    Integer getOTPCode() throws NoSuchAlgorithmException {
         return OneTimePasswordSupplier.createRandomOneTimePassword().get();
     }
 
-    private void sendMail(User user, Integer newOTPCode, JavaMailSender mailSender) throws MessagingException, UnsupportedEncodingException {
+    void sendMail(User user, Integer newOTPCode, JavaMailSender mailSender) throws MessagingException, UnsupportedEncodingException {
         EmailTool sendOTPEmail = new SendOTPEmail(user, newOTPCode, mailSender);
         sendOTPEmail.execute();
     }
 
-    private OneTimePassword buildOTP(User user, Integer otpCode) {
+    OneTimePassword buildOTP(User user, Integer otpCode) {
         return OneTimePassword.builder().user(user).oneTimePasswordCode(otpCode).createdAt(LocalDateTime.now()).build();
     }
 }

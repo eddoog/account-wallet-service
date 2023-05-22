@@ -39,7 +39,7 @@ public class WalletServiceImpl implements WalletService {
             throw new UserNotFoundException(email);
         }
 
-        User user = userOptional.get();
+        var user = userOptional.get();
 
         switch (request.getCurrencyType().toLowerCase()) {
             case "euro" -> {
@@ -58,7 +58,7 @@ public class WalletServiceImpl implements WalletService {
                 throw new CurrencyNotSupportedException(request.getCurrencyType());
         }
 
-        TopUpApproval topUpApproval = TopUpApproval.builder().user(user).transactionAmount(amountConverted).build();
+        var topUpApproval = TopUpApproval.builder().user(user).transactionAmount(amountConverted).build();
         topUpApprovalRepository.save(topUpApproval);
 
         userRepository.save(user);
@@ -80,7 +80,7 @@ public class WalletServiceImpl implements WalletService {
             throw new AmountNullException();
         }
 
-        User user = userOptional.get();
+        var user = userOptional.get();
 
         if (request.getAmount() < 0) {
             throw new AmountNegativeException();
@@ -91,7 +91,7 @@ public class WalletServiceImpl implements WalletService {
 
         user.setWalletAmount(user.getWalletAmount() - request.getAmount());
 
-        Transaction transaction = Transaction.builder().user(user).transactionAmount(request.getAmount() * -1.0).build();
+        var transaction = Transaction.builder().user(user).transactionAmount(request.getAmount() * -1.0).build();
         transactionRepository.save(transaction);
 
         userRepository.save(user);
@@ -110,7 +110,7 @@ public class WalletServiceImpl implements WalletService {
             throw new UserNotFoundException(email);
         }
 
-        User user = userOptional.get();
+        var user = userOptional.get();
 
         if (Boolean.FALSE.equals(request.getApproval())) {
             throw new ApprovalRejectedException();
@@ -123,7 +123,7 @@ public class WalletServiceImpl implements WalletService {
                 user.setWalletAmount(user.getWalletAmount() + request.getAmount());
                 userRepository.save(user);
 
-                Transaction approvedTransaction = Transaction.builder()
+                var approvedTransaction = Transaction.builder()
                         .user(user)
                         .transactionAmount(request.getAmount())
                         .build();
