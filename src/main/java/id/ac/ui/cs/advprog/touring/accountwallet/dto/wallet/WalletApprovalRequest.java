@@ -13,5 +13,4 @@ public class WalletApprovalRequest {
     private String email;
     private Integer amount;
     private Boolean approval;
-    private Integer index;
 }

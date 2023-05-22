@@ -1,9 +1,9 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.service;
 
-import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.CurrencyConverter;
-import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.EuroCurrencyConverter;
-import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.IDRCurrencyConverter;
-import id.ac.ui.cs.advprog.touring.accountwallet.core.wallet.USDCurrencyConverter;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.CurrencyConverter;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.EuroCurrencyConverter;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.IDRCurrencyConverter;
+import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.USDCurrencyConverter;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletApprovalRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTopUpRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletResponse;
@@ -76,11 +76,14 @@ public class WalletServiceImpl implements WalletService {
         if (userOptional.isEmpty()){
             throw new UserNotFoundException(email);
         }
+        if (request.getAmount() == null) {
+            throw new AmountNullException();
+        }
 
         User user = userOptional.get();
 
         if (request.getAmount() < 0) {
-            throw new NegativeAmountException();
+            throw new AmountNegativeException();
         }
         if (user.getWalletAmount() < request.getAmount()) {
             throw new InsufficientFundsException();
@@ -88,14 +91,14 @@ public class WalletServiceImpl implements WalletService {
 
         user.setWalletAmount(user.getWalletAmount() - request.getAmount());
 
-        Transaction transaction = Transaction.builder().user(user).transactionAmount(request.getAmount() * -1).build();
+        Transaction transaction = Transaction.builder().user(user).transactionAmount(request.getAmount() * -1.0).build();
         transactionRepository.save(transaction);
 
         userRepository.save(user);
 
         return WalletResponse.builder()
                 .user(user)
-                .message("Transaction successful, " + amountConverted + " IDR has been deducted")
+                .message("Transaction successful, " + request.getAmount() + " IDR has been deducted")
                 .build();
     }
 
