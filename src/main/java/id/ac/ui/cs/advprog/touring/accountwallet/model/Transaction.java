@@ -15,7 +15,7 @@ public class Transaction {
     @Id
     @GeneratedValue
     private Integer id;
-    @OneToOne()
+    @ManyToOne()
     private User user;
     @Column(nullable = false)
     private double transactionAmount;
