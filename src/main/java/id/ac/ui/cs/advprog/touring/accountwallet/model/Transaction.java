@@ -19,4 +19,6 @@ public class Transaction {
     private User user;
     @Column(nullable = false)
     private double transactionAmount;
+    @Column()
+    private String message;
 }

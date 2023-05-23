@@ -35,7 +35,7 @@ public class WalletServiceImpl implements WalletService {
     public WalletResponse topUp(WalletTopUpRequest request) {
         String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new UserNotFoundException(email);
         }
 
@@ -73,7 +73,7 @@ public class WalletServiceImpl implements WalletService {
     public WalletResponse transfer(WalletTransferRequest request) {
         String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new UserNotFoundException(email);
         }
         if (request.getAmount() == null) {
@@ -91,7 +91,8 @@ public class WalletServiceImpl implements WalletService {
 
         user.setWalletAmount(user.getWalletAmount() - request.getAmount());
 
-        var transaction = Transaction.builder().user(user).transactionAmount(request.getAmount() * -1.0).build();
+        var transaction = Transaction.builder().user(user).transactionAmount(request.getAmount() * -1.0)
+                .message("Transfer successful").build();
         transactionRepository.save(transaction);
 
         userRepository.save(user);
@@ -106,38 +107,35 @@ public class WalletServiceImpl implements WalletService {
     public WalletResponse approval(WalletApprovalRequest request) {
         String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new UserNotFoundException(email);
         }
 
         var user = userOptional.get();
-
-        if (Boolean.FALSE.equals(request.getApproval())) {
-            throw new ApprovalRejectedException();
+        var topUpApprovalOpt = topUpApprovalRepository.findById(request.getTransactionId());
+        if (!topUpApprovalOpt.isPresent()) {
+            throw new IncorrectDataException();
         }
 
-        for (TopUpApproval TopUpApproval: topUpApprovalRepository.findAll()) {
-            if ((TopUpApproval.getUser().getEmail().equalsIgnoreCase(request.getEmail())) &&
-                    TopUpApproval.getTransactionAmount() == request.getAmount())
-            {
-                user.setWalletAmount(user.getWalletAmount() + request.getAmount());
-                userRepository.save(user);
+        var topUpApproval = topUpApprovalOpt.get();
 
-                var approvedTransaction = Transaction.builder()
-                        .user(user)
-                        .transactionAmount(request.getAmount())
-                        .build();
-                transactionRepository.save(approvedTransaction);
+        user.setWalletAmount(user.getWalletAmount() + topUpApproval.getTransactionAmount());
+        userRepository.save(user);
 
-                topUpApprovalRepository.deleteById(TopUpApproval.getId());
+        var approvedTransaction = Transaction.builder()
+                .user(user)
+                .transactionAmount(topUpApproval.getTransactionAmount())
+                .message("Top up approved")
+                .build();
+        transactionRepository.save(approvedTransaction);
 
-                return WalletResponse.builder()
-                        .user(user)
-                        .message("Approval accepted, "
-                                + request.getAmount() + " IDR has been added to " + request.getEmail())
-                        .build();
-            }
-        }
-        throw new IncorrectDataException();
+        topUpApprovalRepository.deleteById(topUpApproval.getId());
+
+        return WalletResponse.builder()
+                .user(user)
+                .message("Approval accepted, "
+                        + topUpApproval.getTransactionAmount() + " IDR has been added to " + request.getEmail())
+                .build();
+
     }
 }

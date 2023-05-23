@@ -59,8 +59,8 @@ class WalletControllerTest {
         when(walletService.topUp(request)).thenReturn(response);
 
         mockMvc.perform(put("/api/v1/auth/wallet/topup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message")
                         .value("Top up request of " + request.getAmount() +
@@ -71,23 +71,21 @@ class WalletControllerTest {
     void testApproval() throws Exception {
         WalletApprovalRequest request = new WalletApprovalRequest();
         request.setEmail("test@example.com");
-        request.setAmount(10);
+        request.setTransactionId(1);
         request.setApproval(Boolean.TRUE);
 
         WalletResponse response = WalletResponse.builder()
-                .message("Approval accepted, "
-                        + request.getAmount() + " IDR has been added to " + request.getEmail())
+                .message("Approval accepted, 1 IDR has been added to " + request.getEmail())
                 .build();
 
         when(walletService.approval(request)).thenReturn(response);
 
         mockMvc.perform(put("/api/v1/auth/wallet/approval")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message")
-                        .value("Approval accepted, "
-                                + request.getAmount() + " IDR has been added to " + request.getEmail()));
+                        .value("Approval accepted, 1 IDR has been added to " + request.getEmail()));
     }
 
     @Test
@@ -103,8 +101,8 @@ class WalletControllerTest {
         when(walletService.transfer(request)).thenReturn(response);
 
         mockMvc.perform(put("/api/v1/auth/wallet/transfer")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message")
                         .value("Transaction successful, " + 10 + " IDR has been deducted"));

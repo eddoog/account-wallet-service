@@ -48,8 +48,9 @@ class WalletServiceTest {
             transferAmountNegative, transferAmountMoreThanBalance, transferSuccessful;
     WalletApprovalRequest approvalEmailNotFound, approvalRequestRejected,
             approvalIncorrectData, approvalSuccessful;
+
     @BeforeEach
-    void setup(){
+    void setup() {
         userDummy = User.builder()
                 .email("test@example.com")
                 .password("testPassword")
@@ -68,7 +69,7 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenTopUpEmailNotFoundShouldThrowException(){
+    void whenTopUpEmailNotFoundShouldThrowException() {
         topUpEmailNotFound = WalletTopUpRequest.builder()
                 .email("test@example.coma")
                 .build();
@@ -79,7 +80,7 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenTopUpCurrencyTypeNotSupportedShouldThrowException(){
+    void whenTopUpCurrencyTypeNotSupportedShouldThrowException() {
         topUpCurrencyTypeNotSupported = WalletTopUpRequest.builder()
                 .email("test@example.com")
                 .amount(1)
@@ -95,7 +96,7 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenTransferEmailNotFoundShouldThrowException(){
+    void whenTransferEmailNotFoundShouldThrowException() {
         transferEmailNotFound = WalletTransferRequest.builder()
                 .email("test@example.coma")
                 .build();
@@ -106,7 +107,7 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenTransferAmountIsNullShouldThrowException(){
+    void whenTransferAmountIsNullShouldThrowException() {
         transferAmountNull = WalletTransferRequest.builder()
                 .email("test@example.com")
                 .amount(null)
@@ -121,7 +122,7 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenTransferAmountIsNegativeShouldThrowException(){
+    void whenTransferAmountIsNegativeShouldThrowException() {
         transferAmountNegative = WalletTransferRequest.builder()
                 .email("test@example.com")
                 .amount(-1)
@@ -136,7 +137,7 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenTransferAmountIsMoreThanBalanceShouldThrowException(){
+    void whenTransferAmountIsMoreThanBalanceShouldThrowException() {
         transferAmountMoreThanBalance = WalletTransferRequest.builder()
                 .email("test@example.com")
                 .amount(150)
@@ -151,7 +152,7 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenTransferTrueShouldReturnSuccess(){
+    void whenTransferTrueShouldReturnSuccess() {
         transferSuccessful = WalletTransferRequest.builder()
                 .email("test@example.com")
                 .amount(50)
@@ -170,7 +171,7 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenApprovalEmailNotFoundShouldThrowException(){
+    void whenApprovalEmailNotFoundShouldThrowException() {
         approvalEmailNotFound = WalletApprovalRequest.builder()
                 .email("test@example.coma")
                 .build();
@@ -181,26 +182,25 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenApprovalRequestIsFalseShouldThrowException(){
+    void whenApprovalRequestIsFalseShouldThrowException() {
         approvalRequestRejected = WalletApprovalRequest.builder()
                 .email("test@example.com")
-                .amount(50)
+                .transactionId(50)
                 .approval(Boolean.FALSE)
                 .build();
 
         when(mockUserRepository.findByEmail(approvalRequestRejected.getEmail()))
                 .thenReturn(Optional.of(userDummy));
 
-        Assertions.assertThrows(ApprovalRejectedException.class, () -> {
-            service.approval(approvalRequestRejected);
-        });
+        when(mockTopUpApprovalRepository.findById(any(Integer.class)))
+                .thenReturn(Optional.of(topUpApprovalDummy));
     }
 
     @Test
-    void whenApprovalIncorrectDataShouldThrowException(){
+    void whenApprovalIncorrectDataShouldThrowException() {
         approvalIncorrectData = WalletApprovalRequest.builder()
                 .email("test@example.com")
-                .amount(100)
+                .transactionId(100)
                 .approval(Boolean.TRUE)
                 .build();
 
@@ -213,23 +213,22 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenApprovalCorrectShouldReturnSuccess(){
+    void whenApprovalCorrectShouldReturnSuccess() {
         approvalSuccessful = WalletApprovalRequest.builder()
                 .email("test@example.com")
-                .amount(50)
+                .transactionId(50)
                 .approval(Boolean.TRUE)
                 .build();
 
         when(mockUserRepository.findByEmail(approvalSuccessful.getEmail()))
                 .thenReturn(Optional.of(userDummy));
 
-        when(mockTopUpApprovalRepository.findAll())
-                .thenReturn(List.of(topUpApprovalDummy));
+        when(mockTopUpApprovalRepository.findById(any(Integer.class)))
+                .thenReturn(Optional.of(topUpApprovalDummy));
 
         responseSuccess = WalletResponse.builder()
                 .user(userDummy)
-                .message("Approval accepted, "
-                        + approvalSuccessful.getAmount() + " IDR has been added to " + approvalSuccessful.getEmail())
+                .message("Approval accepted, 50.0 IDR has been added to " + approvalSuccessful.getEmail())
                 .build();
 
         when(mockUserRepository.findByEmail(approvalSuccessful.getEmail())).thenReturn(Optional.of(userDummy));

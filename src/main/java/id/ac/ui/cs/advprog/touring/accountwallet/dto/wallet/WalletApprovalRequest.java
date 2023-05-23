@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WalletApprovalRequest {
     private String email;
-    private Integer amount;
+    private Integer transactionId;
     private Boolean approval;
 }
