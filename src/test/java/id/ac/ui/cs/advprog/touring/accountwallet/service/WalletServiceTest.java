@@ -1,12 +1,14 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.service;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletApprovalRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletRefundRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTopUpRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTransferRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.wallet.*;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.TopUpApproval;
+import id.ac.ui.cs.advprog.touring.accountwallet.model.Transaction;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.TopUpApprovalRepository;
@@ -23,6 +25,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -182,21 +186,6 @@ class WalletServiceTest {
     }
 
     @Test
-    void whenApprovalRequestIsFalseShouldThrowException() {
-        approvalRequestRejected = WalletApprovalRequest.builder()
-                .email("test@example.com")
-                .transactionId(50)
-                .approval(Boolean.FALSE)
-                .build();
-
-        when(mockUserRepository.findByEmail(approvalRequestRejected.getEmail()))
-                .thenReturn(Optional.of(userDummy));
-
-        when(mockTopUpApprovalRepository.findById(any(Integer.class)))
-                .thenReturn(Optional.of(topUpApprovalDummy));
-    }
-
-    @Test
     void whenApprovalIncorrectDataShouldThrowException() {
         approvalIncorrectData = WalletApprovalRequest.builder()
                 .email("test@example.com")
@@ -235,5 +224,75 @@ class WalletServiceTest {
 
         WalletResponse result = service.approval(approvalSuccessful);
         Assertions.assertEquals(responseSuccess, result);
+    }
+
+    @Test
+    void whenHistoryEmailIsNullThenReturnAll() {
+        var transaction = Transaction.builder().user(userDummy).transactionAmount(0).message("Test").build();
+
+        when(mockTopUpApprovalRepository.findAll()).thenReturn(Arrays.asList(topUpApprovalDummy));
+        when(mockTransactionRepository.findAll()).thenReturn(Arrays.asList(transaction));
+
+        var result = service.history(Optional.empty());
+
+        verify(mockTopUpApprovalRepository, times(1)).findAll();
+        verify(mockTransactionRepository, times(1)).findAll();
+
+        Assertions.assertEquals(result.getPendingApprovals().get(0), topUpApprovalDummy);
+        Assertions.assertEquals(result.getTransactions().get(0), transaction);
+    }
+
+    @Test
+    void whenHistoryEmailIsNotNullThenReturnThatUser() {
+        var transaction = Transaction.builder().user(userDummy).transactionAmount(0).message("Test").build();
+
+        when(mockUserRepository.findByEmail(any(String.class))).thenReturn(Optional.of(userDummy));
+        when(mockTopUpApprovalRepository.findAllByUser(any(User.class))).thenReturn(Arrays.asList(topUpApprovalDummy));
+        when(mockTransactionRepository.findAllByUser(any(User.class))).thenReturn(Arrays.asList(transaction));
+
+        var result = service.history(Optional.of("test@example.com"));
+
+        verify(mockTopUpApprovalRepository, times(1)).findAllByUser(any(User.class));
+        verify(mockTransactionRepository, times(1)).findAllByUser(any(User.class));
+
+        Assertions.assertEquals(result.getPendingApprovals().get(0), topUpApprovalDummy);
+        Assertions.assertEquals(result.getTransactions().get(0), transaction);
+    }
+
+    @Test
+    void whenRefundEmailNotExistsThenThrowException() {
+        var request = WalletRefundRequest.builder()
+                .email("none")
+                .amount(10000)
+                .build();
+
+        when(mockUserRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
+        Assertions.assertThrows(UserNotFoundException.class, () -> service.refund(request));
+    }
+
+    @Test
+    void whenRefundNegativeAmountThenThrowException() {
+        var request = WalletRefundRequest.builder()
+                .email("test@example.com")
+                .amount(-10000)
+                .build();
+
+        when(mockUserRepository.findByEmail(any(String.class))).thenReturn(Optional.of(userDummy));
+        Assertions.assertThrows(AmountNegativeException.class, () -> service.refund(request));
+    }
+
+    @Test
+    void whenRefundOkThenReturnSuccess() {
+        var request = WalletRefundRequest.builder()
+                .email("test@example.com")
+                .amount(10000)
+                .build();
+
+        when(mockUserRepository.findByEmail(any(String.class))).thenReturn(Optional.of(userDummy));
+
+        var result = service.refund(request);
+        verify(mockTransactionRepository, times(1)).save(any(Transaction.class));
+
+        Assertions.assertNotEquals(result.getMessage().indexOf("received"), -1);
     }
 }
