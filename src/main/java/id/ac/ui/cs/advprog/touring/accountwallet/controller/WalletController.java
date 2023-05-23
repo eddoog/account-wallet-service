@@ -2,11 +2,15 @@ package id.ac.ui.cs.advprog.touring.accountwallet.controller;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletApprovalRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletHistoryResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletRefundRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTopUpRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTransferRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +40,14 @@ public class WalletController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<WalletHistoryResponse> history(@RequestParam String email) {
+    public ResponseEntity<WalletHistoryResponse> history(@RequestParam Optional<String> email) {
         WalletHistoryResponse response = walletService.history(email);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refund")
+    public ResponseEntity<WalletResponse> refund(@RequestBody WalletRefundRequest refund) {
+        WalletResponse response = walletService.refund(refund);
         return ResponseEntity.ok(response);
     }
 }

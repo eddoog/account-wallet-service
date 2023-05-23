@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.IDRCurrencyCo
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.USDCurrencyConverter;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletApprovalRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletHistoryResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletRefundRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTopUpRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTransferRequest;
@@ -21,6 +22,7 @@ import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -120,6 +122,20 @@ public class WalletServiceImpl implements WalletService {
 
         var topUpApproval = topUpApprovalOpt.get();
 
+        if (Boolean.FALSE.equals(request.getApproval())) {
+            topUpApprovalRepository.deleteById(request.getTransactionId());
+            var rejectedTransaction = Transaction.builder()
+                    .user(user)
+                    .transactionAmount(topUpApproval.getTransactionAmount())
+                    .message("Top up rejected")
+                    .build();
+            transactionRepository.save(rejectedTransaction);
+            return WalletResponse.builder()
+                    .user(user)
+                    .message("Approval rejected")
+                    .build();
+        }
+
         user.setWalletAmount(user.getWalletAmount() + topUpApproval.getTransactionAmount());
         userRepository.save(user);
 
@@ -141,17 +157,53 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public WalletHistoryResponse history(String email) {
+    public WalletHistoryResponse history(Optional<String> email) {
+        List<TopUpApproval> topUps;
+        List<Transaction> transactions;
+
+        if (!email.isPresent() || email.get().equals("")) {
+            topUps = topUpApprovalRepository.findAll();
+            transactions = transactionRepository.findAll();
+        } else {
+            Optional<User> userOptional = userRepository.findByEmail(email.get());
+            if (userOptional.isEmpty()) {
+                throw new UserNotFoundException(email.get());
+            }
+
+            var user = userOptional.get();
+            topUps = topUpApprovalRepository.findAllByUser(user);
+            transactions = transactionRepository.findAllByUser(user);
+        }
+
+        return WalletHistoryResponse.builder().pendingApprovals(topUps).transactions(transactions).build();
+    }
+
+    @Override
+    public WalletResponse refund(WalletRefundRequest request) {
+        String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty()) {
             throw new UserNotFoundException(email);
         }
 
         var user = userOptional.get();
-        var topUps = topUpApprovalRepository.findAllByUser(user);
-        var transactions = transactionRepository.findAllByUser(user);
+        if (request.getAmount() < 0) {
+            throw new AmountNegativeException();
+        }
 
-        return WalletHistoryResponse.builder().pendingApprovals(topUps).transactions(transactions).build();
+        user.setWalletAmount(user.getWalletAmount() + request.getAmount());
+        userRepository.save(user);
 
+        var transaction = Transaction.builder()
+                .user(user)
+                .transactionAmount(request.getAmount())
+                .message("Refund from trip cancellation")
+                .build();
+        transactionRepository.save(transaction);
+
+        return WalletResponse.builder()
+                .user(user)
+                .message("Refund received, " + request.getAmount() + " IDR has been added to " + request.getEmail())
+                .build();
     }
 }
