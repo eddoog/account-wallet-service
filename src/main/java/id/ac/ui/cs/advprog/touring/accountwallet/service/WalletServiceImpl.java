@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.EuroCurrencyC
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.IDRCurrencyConverter;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.USDCurrencyConverter;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletApprovalRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletHistoryResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTopUpRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTransferRequest;
@@ -136,6 +137,21 @@ public class WalletServiceImpl implements WalletService {
                 .message("Approval accepted, "
                         + topUpApproval.getTransactionAmount() + " IDR has been added to " + request.getEmail())
                 .build();
+
+    }
+
+    @Override
+    public WalletHistoryResponse history(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException(email);
+        }
+
+        var user = userOptional.get();
+        var topUps = topUpApprovalRepository.findAllByUser(user);
+        var transactions = transactionRepository.findAllByUser(user);
+
+        return WalletHistoryResponse.builder().pendingApprovals(topUps).transactions(transactions).build();
 
     }
 }
