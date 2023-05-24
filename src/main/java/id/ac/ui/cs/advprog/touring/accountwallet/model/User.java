@@ -49,7 +49,6 @@ public class User {
     @Column()
     private String domicile;
 
-    @Value("0")
-    @Column()
+    @Column(nullable=false)
     private double walletAmount;
 }
