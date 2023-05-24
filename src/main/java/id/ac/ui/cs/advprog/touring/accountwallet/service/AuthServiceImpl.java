@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
         boolean isPasswordValid = authManager.validatePassword(user.get(), password);
         if (!isPasswordValid) throw new WrongPasswordException(password);
 
-        if (!user.get().getIsEnabled()) {
+        if (Boolean.FALSE.equals(user.get().getIsEnabled())) {
             throw new UserNotEnabledException(user.get().getEmail());
         }
 

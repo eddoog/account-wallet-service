@@ -34,6 +34,7 @@ public abstract class UserBuilder {
                 .password(request.getPassword())
                 .role(request.getRole())
                 .createdAt(LocalDateTime.now())
+                .walletAmount(0)
                 .build();
     }
 

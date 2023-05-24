@@ -18,21 +18,18 @@ public class EditProfileController {
     private final EditProfileService editProfileService;
 
     @GetMapping("/profile")
-    @CrossOrigin(maxAge = 3600)
     public ResponseEntity<ProfileResponse> getProfile(@RequestBody ProfileRequest request) {
         ProfileResponse response = editProfileService.getProfile(request);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/update/personalData")
-    @CrossOrigin(maxAge = 3600)
     public ResponseEntity<EditProfileResponse> editPersonalData(@RequestBody EditPersonalDataRequest request) {
         EditProfileResponse response = editProfileService.editPersonalData(request);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/update/username")
-    @CrossOrigin(maxAge = 3600)
     public ResponseEntity<EditProfileResponse> editUsername(@RequestBody EditUsernameRequest request) {
         EditProfileResponse response = editProfileService.editUsername(request);
         return ResponseEntity.ok(response);
