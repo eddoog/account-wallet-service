@@ -5,6 +5,8 @@ import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.EuroCurrencyC
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.IDRCurrencyConverter;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.utils.wallet.USDCurrencyConverter;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletApprovalRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletHistoryResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletRefundRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTopUpRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.wallet.WalletTransferRequest;
@@ -20,6 +22,7 @@ import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,7 +38,7 @@ public class WalletServiceImpl implements WalletService {
     public WalletResponse topUp(WalletTopUpRequest request) {
         String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new UserNotFoundException(email);
         }
 
@@ -73,7 +76,7 @@ public class WalletServiceImpl implements WalletService {
     public WalletResponse transfer(WalletTransferRequest request) {
         String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new UserNotFoundException(email);
         }
         if (request.getAmount() == null) {
@@ -91,7 +94,8 @@ public class WalletServiceImpl implements WalletService {
 
         user.setWalletAmount(user.getWalletAmount() - request.getAmount());
 
-        var transaction = Transaction.builder().user(user).transactionAmount(request.getAmount() * -1.0).build();
+        var transaction = Transaction.builder().user(user).transactionAmount(request.getAmount() * -1.0)
+                .message("Transfer successful").build();
         transactionRepository.save(transaction);
 
         userRepository.save(user);
@@ -106,38 +110,100 @@ public class WalletServiceImpl implements WalletService {
     public WalletResponse approval(WalletApprovalRequest request) {
         String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new UserNotFoundException(email);
         }
 
         var user = userOptional.get();
+        var topUpApprovalOpt = topUpApprovalRepository.findById(request.getTransactionId());
+        if (!topUpApprovalOpt.isPresent()) {
+            throw new IncorrectDataException();
+        }
+
+        var topUpApproval = topUpApprovalOpt.get();
 
         if (Boolean.FALSE.equals(request.getApproval())) {
-            throw new ApprovalRejectedException();
+            topUpApprovalRepository.deleteById(request.getTransactionId());
+            var rejectedTransaction = Transaction.builder()
+                    .user(user)
+                    .transactionAmount(topUpApproval.getTransactionAmount())
+                    .message("Top up rejected")
+                    .build();
+            transactionRepository.save(rejectedTransaction);
+            return WalletResponse.builder()
+                    .user(user)
+                    .message("Approval rejected")
+                    .build();
         }
 
-        for (TopUpApproval TopUpApproval: topUpApprovalRepository.findAll()) {
-            if ((TopUpApproval.getUser().getEmail().equalsIgnoreCase(request.getEmail())) &&
-                    TopUpApproval.getTransactionAmount() == request.getAmount())
-            {
-                user.setWalletAmount(user.getWalletAmount() + request.getAmount());
-                userRepository.save(user);
+        user.setWalletAmount(user.getWalletAmount() + topUpApproval.getTransactionAmount());
+        userRepository.save(user);
 
-                var approvedTransaction = Transaction.builder()
-                        .user(user)
-                        .transactionAmount(request.getAmount())
-                        .build();
-                transactionRepository.save(approvedTransaction);
+        var approvedTransaction = Transaction.builder()
+                .user(user)
+                .transactionAmount(topUpApproval.getTransactionAmount())
+                .message("Top up approved")
+                .build();
+        transactionRepository.save(approvedTransaction);
 
-                topUpApprovalRepository.deleteById(TopUpApproval.getId());
+        topUpApprovalRepository.deleteById(topUpApproval.getId());
 
-                return WalletResponse.builder()
-                        .user(user)
-                        .message("Approval accepted, "
-                                + request.getAmount() + " IDR has been added to " + request.getEmail())
-                        .build();
+        return WalletResponse.builder()
+                .user(user)
+                .message("Approval accepted, "
+                        + topUpApproval.getTransactionAmount() + " IDR has been added to " + request.getEmail())
+                .build();
+
+    }
+
+    @Override
+    public WalletHistoryResponse history(Optional<String> email) {
+        List<TopUpApproval> topUps;
+        List<Transaction> transactions;
+
+        if (!email.isPresent() || email.get().equals("")) {
+            topUps = topUpApprovalRepository.findAll();
+            transactions = transactionRepository.findAll();
+        } else {
+            Optional<User> userOptional = userRepository.findByEmail(email.get());
+            if (userOptional.isEmpty()) {
+                throw new UserNotFoundException(email.get());
             }
+
+            var user = userOptional.get();
+            topUps = topUpApprovalRepository.findAllByUser(user);
+            transactions = transactionRepository.findAllByUser(user);
         }
-        throw new IncorrectDataException();
+
+        return WalletHistoryResponse.builder().pendingApprovals(topUps).transactions(transactions).build();
+    }
+
+    @Override
+    public WalletResponse refund(WalletRefundRequest request) {
+        String email = request.getEmail();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException(email);
+        }
+
+        var user = userOptional.get();
+        if (request.getAmount() < 0) {
+            throw new AmountNegativeException();
+        }
+
+        user.setWalletAmount(user.getWalletAmount() + request.getAmount());
+        userRepository.save(user);
+
+        var transaction = Transaction.builder()
+                .user(user)
+                .transactionAmount(request.getAmount())
+                .message("Refund from trip cancellation")
+                .build();
+        transactionRepository.save(transaction);
+
+        return WalletResponse.builder()
+                .user(user)
+                .message("Refund received, " + request.getAmount() + " IDR has been added to " + request.getEmail())
+                .build();
     }
 }
