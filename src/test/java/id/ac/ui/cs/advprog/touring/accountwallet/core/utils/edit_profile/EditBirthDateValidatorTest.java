@@ -143,6 +143,20 @@ class EditBirthDateValidatorTest {
     }
 
     @Test
+    void whenBirthDateBelowAgeLimitThrowAgeRestrictException(){
+        birthDateRequestRestrictedByAge = EditPersonalDataRequest.builder()
+                .email("test@example.com")
+                .birthDate("01/01/2100")
+                .build();
+
+        when(repository.findByEmail(birthDateRequestRestrictedByAge.getEmail())).thenReturn(Optional.of(userDummy));
+
+        Assertions.assertThrows(AgeRestrictionException.class, () -> {
+            service.editPersonalData(birthDateRequestRestrictedByAge);
+        });
+    }
+
+    @Test
     void whenNoUserFoundThrowException(){
         userNotFound = EditPersonalDataRequest.builder()
                 .email("test@example.coma")
