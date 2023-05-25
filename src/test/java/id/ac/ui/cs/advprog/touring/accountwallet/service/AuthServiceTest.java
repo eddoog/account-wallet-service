@@ -4,6 +4,7 @@ import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.LoginRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.LogoutRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.ValidateRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.InvalidTokenException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotEnabledException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.WrongPasswordException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.Session;
@@ -38,6 +39,7 @@ class AuthServiceTest {
     private SessionRepository mockSessionRepository;
 
     private User existingUser;
+    private User notEnabledUser;
 
     @BeforeEach
     void setUp() {
@@ -46,6 +48,15 @@ class AuthServiceTest {
                 .username("existinguser")
                 .email("existinguser@example.com")
                 .password(new BCryptPasswordEncoder().encode("password"))
+                .isEnabled(true)
+                .build();
+
+        notEnabledUser = User.builder()
+                .id(2)
+                .username("notenableduser")
+                .email("notenableduser@example.com")
+                .password(new BCryptPasswordEncoder().encode("password"))
+                .isEnabled(false)
                 .build();
     }
 
@@ -83,6 +94,21 @@ class AuthServiceTest {
         when(mockUserRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> service.login(request));
+
+        verify(mockUserRepository, times(1)).findByEmail(email);
+        verify(mockSessionRepository, never()).save(any(Session.class));
+    }
+
+    @Test
+    void whenLoginWithNotEnabledUserShouldThrowUserNotEnabledException() {
+        String email = "notenableduser@example.com";
+        String password = "password";
+
+        LoginRequest request = new LoginRequest(email, password);
+
+        when(mockUserRepository.findByEmail(email)).thenReturn(Optional.of(notEnabledUser));
+
+        assertThrows(UserNotEnabledException.class, () -> service.login(request));
 
         verify(mockUserRepository, times(1)).findByEmail(email);
         verify(mockSessionRepository, never()).save(any(Session.class));

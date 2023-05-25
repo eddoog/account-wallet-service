@@ -3,6 +3,7 @@ package id.ac.ui.cs.advprog.touring.accountwallet.service;
 import id.ac.ui.cs.advprog.touring.accountwallet.core.AuthManager;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.*;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.InvalidTokenException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotEnabledException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.WrongPasswordException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.Session;
@@ -32,6 +33,10 @@ public class AuthServiceImpl implements AuthService {
 
         boolean isPasswordValid = authManager.validatePassword(user.get(), password);
         if (!isPasswordValid) throw new WrongPasswordException(password);
+
+        if (Boolean.FALSE.equals(user.get().getIsEnabled())) {
+            throw new UserNotEnabledException(user.get().getEmail());
+        }
 
         String token = authManager.generateToken(user.get());
 

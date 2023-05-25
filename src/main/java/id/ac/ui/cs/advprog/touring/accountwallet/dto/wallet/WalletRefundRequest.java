@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WalletApprovalRequest {
+public class WalletRefundRequest {
     private String email;
-    private Integer transactionId;
-    private Boolean approval;
+    private Integer amount;
 }
