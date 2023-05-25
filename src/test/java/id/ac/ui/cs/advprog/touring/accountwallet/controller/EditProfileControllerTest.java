@@ -1,13 +1,11 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.ProfileRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.dto.ProfileResponse;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.ProfileRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.ProfileResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditPersonalDataRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditProfileResponse;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.edit_profile.EditUsernameRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
-import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 import id.ac.ui.cs.advprog.touring.accountwallet.service.EditProfileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
