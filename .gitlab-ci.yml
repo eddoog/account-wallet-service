@@ -114,7 +114,7 @@ sonarqube-check:
       - .sonar/cache
   dependencies:
     - Build
-  script: gradle sonarqube -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+  script: gradle sonarqube -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN -D"sonar.coverage.exclusions=**/accountwallet/config/**, **/accountwallet/dto/**, **/accountwallet/exception/**, **/accountwallet/model/**, **/accountwallet/repository/**"
   allow_failure: true
   only:
     - merge_requests

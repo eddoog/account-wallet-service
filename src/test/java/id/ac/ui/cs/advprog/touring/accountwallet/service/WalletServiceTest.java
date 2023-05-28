@@ -202,6 +202,25 @@ class WalletServiceTest {
     }
 
     @Test
+    void whenApprovalIsRejectedShouldThrowError() {
+        approvalRequestRejected = WalletApprovalRequest.builder()
+                .email("test@example.com")
+                .transactionId(100)
+                .approval(Boolean.FALSE)
+                .build();
+
+        when(mockUserRepository.findByEmail(approvalRequestRejected.getEmail()))
+                .thenReturn(Optional.of(userDummy));
+
+        when(mockTopUpApprovalRepository.findById(any(Integer.class)))
+                .thenReturn(Optional.of(topUpApprovalDummy));
+
+        var expectedResponse = service.approval(approvalRequestRejected);
+
+        Assertions.assertEquals("Approval rejected", expectedResponse.getMessage());
+    }
+
+    @Test
     void whenApprovalCorrectShouldReturnSuccess() {
         approvalSuccessful = WalletApprovalRequest.builder()
                 .email("test@example.com")

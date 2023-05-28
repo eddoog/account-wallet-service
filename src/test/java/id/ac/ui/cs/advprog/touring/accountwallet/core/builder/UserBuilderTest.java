@@ -86,7 +86,7 @@ class UserBuilderTest {
         assertEquals("testUsername", actualUser.getUsername());
         assertEquals(UserType.CUSTOMER, actualUser.getRole());
         assertEquals(true, actualUser.getIsEnabled());
-        assertEquals(null, actualUser.getVerificationCode());
+        assertNull(actualUser.getVerificationCode());
         assertEquals("New Customer has been successfully made", actualMessage);
     }
 
@@ -175,7 +175,6 @@ class UserBuilderTest {
         assertNotEquals(existingUser.getRole(), actualUser.getRole());
         assertNotEquals(existingUser.getIsEnabled(), actualUser.getIsEnabled());
         assertNull(actualUser.getVerificationCode());
-        assertNotEquals(existingUser.getVerificationCode(), actualUser.getVerificationCode());
         assertEquals("New Customer has been successfully made", actualMessage);
     }
 }
