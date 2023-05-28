@@ -135,6 +135,34 @@ class RegisterServiceTest {
     }
 
     @Test
+    void whenRegisterWithExistingEmailButNotEnabledShouldReturnResponse() throws MessagingException, UnsupportedEncodingException {
+        // Set behaviour of saving user in which the id is set to 1
+        when(mockUserRepository.save(any(User.class))).thenAnswer(invocation -> {
+            var user = invocation.getArgument(0, User.class);
+            user.setId(1);
+            return user;
+        });
+
+        var notEnabledUser = User.builder().username("uniqueuser")
+                .email("uniqueuser@example.com")
+                .isEnabled(Boolean.FALSE)
+                .build();
+
+        var notEnabledRequest = RegisterRequest.builder()
+                .username("uniqueuser")
+                .email("uniqueuser@example.com")
+                .password("uniquepassword")
+                .role("Customer")
+                .build();
+
+        when(mockUserRepository.findByEmail(notEnabledRequest.getEmail())).thenReturn(Optional.of(notEnabledUser));
+
+        var expectedResponse = service.register(notEnabledRequest);
+
+        Assertions.assertNotNull(expectedResponse);
+    }
+
+    @Test
     void whenVerifyUserHaveToBeEnabled() {
         String verificationCode = "0123456789";
 
