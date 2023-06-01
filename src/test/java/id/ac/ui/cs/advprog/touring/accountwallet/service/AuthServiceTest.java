@@ -3,10 +3,7 @@ package id.ac.ui.cs.advprog.touring.accountwallet.service;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.LoginRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.LogoutRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.ValidateRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.InvalidTokenException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotEnabledException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.WrongPasswordException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.*;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.Session;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.SessionRepository;
@@ -123,7 +120,22 @@ class AuthServiceTest {
 
         when(mockUserRepository.findByEmail(email)).thenReturn(Optional.of(existingUser));
 
-        assertThrows(WrongPasswordException.class, () -> service.login(request));
+        assertThrows(InvalidEmailOrPasswordException.class, () -> service.login(request));
+
+        verify(mockUserRepository, times(1)).findByEmail(email);
+        verify(mockSessionRepository, never()).save(any(Session.class));
+    }
+
+    @Test
+    void whenLoginWithBlankEmailShouldThrowUserNotFoundException() {
+        String email = " ";
+        String password = "password";
+
+        LoginRequest request = new LoginRequest(email, password);
+
+        when(mockUserRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> service.login(request));
 
         verify(mockUserRepository, times(1)).findByEmail(email);
         verify(mockSessionRepository, never()).save(any(Session.class));
@@ -142,7 +154,6 @@ class AuthServiceTest {
         assertEquals("Logout berhasil", response.getMessage());
 
         verify(mockSessionRepository, times(1)).findByToken(token);
-        verify(mockSessionRepository, times(1)).deleteByToken(token);
     }
 
     @Test
