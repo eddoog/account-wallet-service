@@ -60,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
         Optional<Session> session = sessionRepository.findByToken(token);
         if (session.isEmpty()) throw new InvalidTokenException(token);
 
-        sessionRepository.deleteByToken(token);
+        sessionRepository.deleteById(session.get().getId());
 
         return LogoutResponse.builder()
                 .message("Logout berhasil")
