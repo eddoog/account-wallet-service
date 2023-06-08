@@ -3,15 +3,20 @@ package id.ac.ui.cs.advprog.touring.accountwallet.service;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.forgotpassword.CheckOTPRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.forgotpassword.ForgotPasswordRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.forgotpassword.ProvideOTPRequest;
+import id.ac.ui.cs.advprog.touring.accountwallet.dto.register.RegisterRequest;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.forgotpassword.InvalidOTPCodeException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.forgotpassword.WrongOTPCodeException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.InvalidEmailException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.PasswordLimitException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.TrimmedException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.OneTimePassword;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.OneTimePasswordRepository;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
 import jakarta.mail.internet.MimeMessage;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -148,6 +153,13 @@ class ForgotPasswordServiceTest {
     }
 
     @Test
+    void whenGivingInValidEmailShouldThrowError() {
+        var invalidRequest = ProvideOTPRequest.builder().email("abcde@examplecom").build();
+
+        Assertions.assertThrows(InvalidEmailException.class, () -> forgotPasswordService.provideOTP(invalidRequest));
+    }
+
+    @Test
     void whenOTPCodeIsValidShouldReturnSuccessResponse() {
         int otpCode = 123456;
 
@@ -213,5 +225,21 @@ class ForgotPasswordServiceTest {
         assertThrows(UserNotFoundException.class, () -> forgotPasswordService.changePassword(request));
 
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void whenChangePasswordWithInvalidPasswordShouldThrowUserNotFoundException() {
+        String email = "test@example.com";
+        var invalidRequest = ForgotPasswordRequest.builder().email(email).newPassword(" password ").build();
+
+        Assertions.assertThrows(TrimmedException.class, () -> forgotPasswordService.changePassword(invalidRequest));
+    }
+
+    @Test
+    void whenRegisterWithInvalidPasswordLengthShouldThrowsError() {
+        String email = "test@example.com";
+        var invalidRequest = ForgotPasswordRequest.builder().email(email).newPassword("pass").build();
+
+        Assertions.assertThrows(PasswordLimitException.class, () -> forgotPasswordService.changePassword(invalidRequest));
     }
 }
