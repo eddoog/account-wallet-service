@@ -2,10 +2,7 @@ package id.ac.ui.cs.advprog.touring.accountwallet.service;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.core.AuthManager;
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.login.*;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.InvalidTokenException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotEnabledException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.WrongPasswordException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.*;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.Session;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.SessionRepository;
@@ -32,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
         var authManager = AuthManager.getInstance();
 
         boolean isPasswordValid = authManager.validatePassword(user.get(), password);
-        if (!isPasswordValid) throw new WrongPasswordException(password);
+        if (!isPasswordValid) throw new InvalidEmailOrPasswordException();
 
         if (Boolean.FALSE.equals(user.get().getIsEnabled())) {
             throw new UserNotEnabledException(user.get().getEmail());
@@ -60,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
         Optional<Session> session = sessionRepository.findByToken(token);
         if (session.isEmpty()) throw new InvalidTokenException(token);
 
-        sessionRepository.deleteByToken(token);
+        sessionRepository.deleteById(session.get().getId());
 
         return LogoutResponse.builder()
                 .message("Logout berhasil")
