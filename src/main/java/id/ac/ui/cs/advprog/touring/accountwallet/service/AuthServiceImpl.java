@@ -24,7 +24,6 @@ public class AuthServiceImpl implements AuthService {
         String password = request.getPassword();
 
         Optional<User> user = userRepository.findByEmail(email);
-        System.out.println(user);
         if (user.isEmpty()) throw new UserNotFoundException(email);
 
         var authManager = AuthManager.getInstance();
