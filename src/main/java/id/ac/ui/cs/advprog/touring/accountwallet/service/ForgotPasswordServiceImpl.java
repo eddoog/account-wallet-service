@@ -11,6 +11,9 @@ import id.ac.ui.cs.advprog.touring.accountwallet.dto.forgotpassword.ProvideOTPRe
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.forgotpassword.InvalidOTPCodeException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.login.UserNotFoundException;
 import id.ac.ui.cs.advprog.touring.accountwallet.exception.forgotpassword.WrongOTPCodeException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.InvalidEmailException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.PasswordLimitException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.TrimmedException;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.OneTimePassword;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.OneTimePasswordRepository;
@@ -34,6 +37,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private final OneTimePasswordRepository oneTimePasswordRepository;
     private final RegisterManager registerManager = RegisterManager.getInstance();
     private JavaMailSender mailSender;
+    private static final int EXPIRED_LIMIT = 5;
 
     @Autowired
     public ForgotPasswordServiceImpl(JavaMailSender mailSender, UserRepository userRepository, OneTimePasswordRepository oneTimePasswordRepository) {
@@ -44,6 +48,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     @Override
     public ForgotPasswordResponse provideOTP(ProvideOTPRequest request) throws MessagingException, UnsupportedEncodingException, NoSuchAlgorithmException {
         var email = request.getEmail();
+
+        if (registerManager.checkEmailValid(email)) throw new InvalidEmailException(email);
+
         var optionalUser = doesUserExist(email);
 
         if (optionalUser.isEmpty()) throw new UserNotFoundException(email);
@@ -75,7 +82,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         var oneTimePassword = oneTimePasswordOptional.get();
 
         long checkDuration = Duration.between(oneTimePassword.getCreatedAt(), LocalDateTime.now()).toMinutes();
-        if (checkDuration > 5) throw new WrongOTPCodeException();
+        if (checkDuration > EXPIRED_LIMIT) throw new WrongOTPCodeException();
 
         var user = oneTimePassword.getUser();
 
@@ -87,12 +94,17 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     @Override
     public ForgotPasswordResponse changePassword(ForgotPasswordRequest request) {
         var email = request.getEmail();
+        var password = request.getNewPassword();
+
+        if (registerManager.checkTrimValid(password)) throw new TrimmedException("Password");
+        if (registerManager.checkPasswordLength(password)) throw new PasswordLimitException();
+
         var userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty()) throw new UserNotFoundException(email);
 
         var user = userOptional.get();
 
-        user.setPassword(registerManager.encryptPassword(request.getNewPassword()));
+        user.setPassword(registerManager.encryptPassword(password));
 
         userRepository.save(user);
 

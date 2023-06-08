@@ -1,9 +1,7 @@
 package id.ac.ui.cs.advprog.touring.accountwallet.service;
 
 import id.ac.ui.cs.advprog.touring.accountwallet.dto.register.RegisterRequest;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.UserDoesExistException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.UserHasBeenVerifiedException;
-import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.VerificationInvalidException;
+import id.ac.ui.cs.advprog.touring.accountwallet.exception.register.*;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.User;
 import id.ac.ui.cs.advprog.touring.accountwallet.model.UserType;
 import id.ac.ui.cs.advprog.touring.accountwallet.repository.UserRepository;
@@ -108,6 +106,53 @@ class RegisterServiceTest {
         Assertions.assertEquals(10, res.length());
     }
 
+    @Test
+    void whenRegisterWithInvalidEmailShouldThrowsError() {
+        var invalidRequest = RegisterRequest.builder()
+                .username("uniqueuser")
+                .email("abcde@examplecom")
+                .password("password")
+                .role("Customer")
+                .build();
+
+        Assertions.assertThrows(InvalidEmailException.class, () -> service.register(invalidRequest));
+    }
+
+    @Test
+    void whenRegisterWithInvalidPasswordFormatShouldThrowsError() {
+        var invalidRequest = RegisterRequest.builder()
+                .username("uniqueuser")
+                .email("uniqueuser@example.com")
+                .password(" password ")
+                .role("Customer")
+                .build();
+
+        Assertions.assertThrows(TrimmedException.class, () -> service.register(invalidRequest));
+    }
+
+    @Test
+    void whenRegisterWithInvalidPasswordLengthShouldThrowsError() {
+        var invalidRequest = RegisterRequest.builder()
+                .username("uniqueuser")
+                .email("uniqueuser@example.com")
+                .password("pass")
+                .role("Customer")
+                .build();
+
+        Assertions.assertThrows(PasswordLimitException.class, () -> service.register(invalidRequest));
+    }
+
+    @Test
+    void whenRegisterWithInvalidUsernameFormatShouldThrowsError() {
+        var invalidRequest = RegisterRequest.builder()
+                .username(" uniqueuser ")
+                .email("uniqueuser@example.com")
+                .password("password")
+                .role("Customer")
+                .build();
+
+        Assertions.assertThrows(TrimmedException.class, () -> service.register(invalidRequest));
+    }
     @Test
     void whenRegisterWithExistingEmailShouldThrowsError() throws MessagingException, UnsupportedEncodingException {
         // Set behaviour of saving user in which the id is set to 1
