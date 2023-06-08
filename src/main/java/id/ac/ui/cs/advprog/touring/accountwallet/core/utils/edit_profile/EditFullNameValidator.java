@@ -11,6 +11,7 @@ public class EditFullNameValidator implements IValidator {
     public String validate(){
         String name = request.getFullName();
         if (name == null || name.equals("")) return null;
+        if (name.trim().isEmpty()) return null;
         var spaceCount = 0;
 
         for (var i = 0; i < name.length(); i++) {
