@@ -35,7 +35,7 @@ public class EditProfileServiceImpl implements EditProfileService {
         user.setFullName(getUpdatedValue(user.getFullName(), verified.get(0)));
         user.setPhoneNum(getUpdatedValue(user.getPhoneNum(), verified.get(1)));
         user.setBirthDate(getUpdatedValue(user.getBirthDate(), verified.get(2)));
-        user.setGender((request.getGender() != null && !request.getGender().equals("")) ? User.Gender.valueOf(request.getGender()) : user.getGender());
+        user.setGender((request.getGender() != null && !request.getGender().equals("")) ? request.getGender() : user.getGender());
         user.setDomicile((request.getDomicile() != null && !request.getDomicile().equals("")) ? request.getDomicile() : user.getDomicile());
         userRepository.save(user);
 

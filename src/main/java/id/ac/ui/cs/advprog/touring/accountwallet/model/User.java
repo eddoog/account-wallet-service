@@ -43,23 +43,8 @@ public class User {
     private String phoneNum;
     @Column()
     private String birthDate;
-
-    public enum Gender {
-        MALE("Male"),
-        FEMALE("Female");
-
-        private final String value;
-
-        Gender(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
     @Column()
-    private Gender gender;
+    private String gender;
     @Column()
     private String domicile;
 
